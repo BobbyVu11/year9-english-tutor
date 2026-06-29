@@ -172,15 +172,42 @@ def show_login():
 # ── Admin panel ────────────────────────────────────────────────────────────────
 
 def show_admin():
-    # Top bar: welcome + logout
-    col_title, col_logout = st.columns([8, 1])
-    with col_title:
-        st.markdown(f"⚙️ **Admin Panel** — logged in as **{st.session_state.display_name}**")
-    with col_logout:
-        if st.button("Log out", key="admin_logout"):
-            for k in ("logged_in", "username", "role", "display_name"):
-                st.session_state[k] = False if k == "logged_in" else ""
-            st.rerun()
+    name = st.session_state.display_name
+    st.markdown(
+        f"""
+        <style>
+        .sbar {{
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 14px; font-size: 13px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }}
+        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
+        .sbar-logout {{
+            background: none; border: none; cursor: pointer;
+            font-size: 16px; color: #c0392b;
+            opacity: 0.75; padding: 2px 5px;
+            border-radius: 50%;
+            transition: opacity 0.15s, background 0.15s;
+            line-height: 1;
+        }}
+        .sbar-logout:hover {{ opacity: 1; background: rgba(192,57,43,0.12); }}
+        </style>
+        <form method="get" style="margin:0;padding:0">
+          <div class="sbar">
+            <span class="sbar-name">⚙️ {name}</span>
+            <button class="sbar-logout" name="_logout" value="1"
+                    title="Log out" type="submit">⏻</button>
+          </div>
+        </form>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if st.query_params.get("_logout") == "1":
+        for k in ("logged_in", "username", "role", "display_name"):
+            st.session_state[k] = False if k == "logged_in" else ""
+        st.query_params.clear()
+        st.rerun()
 
     tab_users, tab_tutor = st.tabs(["👥 Manage Users", "📚 Open Tutor"])
 
