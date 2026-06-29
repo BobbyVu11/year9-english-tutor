@@ -285,6 +285,11 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
   opacity: 1;
   transform: scale(1.12);
 }
+#logout-btn:hover {
+  background: var(--border);
+  opacity: 1;
+  transform: scale(1.12);
+}
 
 /* ── Print ────────────────────────────────────── */
 @media print {
@@ -389,6 +394,11 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
       <span class="logo">Year 9 English Tutor<span>Victorian Curriculum · Year 10 Extension</span></span>
     </div>
     <div class="header-right">
+      <span id="user-display" style="font-size:12px;color:var(--text2);margin-right:2px;white-space:nowrap"></span>
+      <button id="logout-btn" onclick="doLogout()" title="Log out"
+        style="width:32px;height:32px;border-radius:50%;border:none;background:transparent;
+               cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
+               opacity:0.65;transition:background 0.15s,opacity 0.15s,transform 0.15s">⏻</button>
       <button id="theme-btn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
     </div>
   </header>
@@ -569,7 +579,33 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
 // streamlit_app.py replaces this line before rendering.
 // Each user gets their own localStorage namespace so progress
 // is stored separately per account.
-var CURRENT_USER = 'default';
+var CURRENT_USER  = 'default';
+var DISPLAY_NAME  = '';   // injected by streamlit_app.py
+
+// ── User display + logout ─────────────────────────────────────
+(function initUserBar() {
+  var nameEl   = document.getElementById("user-display");
+  var logoutEl = document.getElementById("logout-btn");
+  if (DISPLAY_NAME && nameEl)   nameEl.textContent = DISPLAY_NAME;
+  // Hide logout button when running standalone (no Streamlit wrapper)
+  if ((!DISPLAY_NAME || CURRENT_USER === 'default') && logoutEl) {
+    logoutEl.style.display = "none";
+    if (nameEl) nameEl.style.display = "none";
+  }
+})();
+
+function doLogout() {
+  // Navigate the top-level Streamlit page to trigger session clear.
+  try {
+    var base = window.top.location.href.split("?")[0];
+    window.top.location.href = base + "?action=logout";
+  } catch(e) {
+    try {
+      var base2 = window.parent.location.href.split("?")[0];
+      window.parent.location.href = base2 + "?action=logout";
+    } catch(e2) { alert("Session ended — please refresh the page to log in again."); }
+  }
+}
 
 // ══ Performance-level tracking ════════════════════════════════
 // Stores a grade (A-E) for every scored practice session so the

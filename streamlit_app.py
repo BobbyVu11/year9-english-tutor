@@ -78,45 +78,13 @@ st.markdown(
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .block-container {
-            padding-top: 0.35rem;
+            padding-top: 0 !important;
             padding-bottom: 0;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 0;
+            padding-right: 0;
         }
         iframe[title="streamlit_app.streamlit_app"] {
             overflow: hidden !important;
-        }
-
-        /* ── Welcome bar ── */
-        /* Shrink the gap Streamlit adds above the column row */
-        div[data-testid="stHorizontalBlock"] {
-            align-items: center;
-            gap: 0;
-            margin-bottom: -0.5rem;
-        }
-        /* Welcome text — compact */
-        div[data-testid="stHorizontalBlock"] p {
-            font-size: 13px;
-            margin: 0;
-            color: #555;
-        }
-        /* Log out button — subtle pill */
-        div[data-testid="stButton"] > button {
-            background: transparent !important;
-            border: 1px solid #d0d0d0 !important;
-            color: #888 !important;
-            font-size: 12px !important;
-            font-weight: 500 !important;
-            padding: 3px 14px !important;
-            border-radius: 20px !important;
-            line-height: 1.6 !important;
-            box-shadow: none !important;
-            transition: all 0.15s !important;
-        }
-        div[data-testid="stButton"] > button:hover {
-            background: #f5f5f5 !important;
-            border-color: #aaa !important;
-            color: #333 !important;
         }
         /* Form card background */
         div[data-testid="stForm"] {
@@ -166,6 +134,17 @@ if "logged_in" not in st.session_state:
     st.session_state.username = ""
     st.session_state.role = ""
     st.session_state.display_name = ""
+
+# ── Handle logout triggered from inside the iframe ────────────────────────────
+# The iframe's logout button navigates window.top to ?action=logout.
+# We detect that here, clear the session, then redirect to the clean URL.
+if st.query_params.get("action") == "logout":
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.session_state.role = ""
+    st.session_state.display_name = ""
+    st.query_params.clear()
+    st.rerun()
 
 
 # ── Login page ─────────────────────────────────────────────────────────────────
@@ -327,40 +306,35 @@ def show_admin():
 
     # ── Tutor tab (admin can also practise) ──────────────────────────────────
     with tab_tutor:
-        _render_tutor(st.session_state.username, show_bar=False)
+        _render_tutor(st.session_state.username, st.session_state.display_name)
 
 
 # ── Student view ──────────────────────────────────────────────────────────────
 
 def show_student():
-    col_name, col_logout = st.columns([8, 1])
-    with col_name:
-        st.markdown(f"👋 Welcome, **{st.session_state.display_name}**")
-    with col_logout:
-        if st.button("Log out", key="student_logout"):
-            for k in ("logged_in", "username", "role", "display_name"):
-                st.session_state[k] = False if k == "logged_in" else ""
-            st.rerun()
-    _render_tutor(st.session_state.username, show_bar=True)
+    # No separate Streamlit welcome bar — the username + logout ⏻ icon live
+    # inside the iframe header alongside the theme toggle.
+    _render_tutor(st.session_state.username, st.session_state.display_name)
 
 
-def _render_tutor(username: str, show_bar: bool):
-    """Load index.html, inject the current username, and render it."""
+def _render_tutor(username: str, display_name: str = ""):
+    """Load index.html, inject username + display name, and render."""
     html_file = BASE / "index.html"
     if not html_file.exists():
         st.error("**index.html not found.** Make sure it is in the same folder as streamlit_app.py.")
         st.stop()
 
-    # Inject the username so the HTML app uses user-specific localStorage keys.
-    # The placeholder 'default' is defined near the top of the <script> block
-    # in index.html and replaced here before rendering.
-    html_content = html_file.read_text(encoding="utf-8").replace(
-        "var CURRENT_USER = 'default';",
-        f"var CURRENT_USER = '{username}';",
+    # Inject user identity so the HTML uses per-user localStorage keys
+    # and shows the correct name + logout button in its own header.
+    safe_name = display_name.replace("'", "\\'")
+    html_content = (
+        html_file.read_text(encoding="utf-8")
+        .replace("var CURRENT_USER = 'default';", f"var CURRENT_USER = '{username}';")
+        .replace("var DISPLAY_NAME  = '';",        f"var DISPLAY_NAME  = '{safe_name}';")
     )
 
-    # scrolling=False → single browser scrollbar (Streamlit Cloud blocks postMessage).
-    # height=10000 covers the tallest tab (Metalanguage on mobile ~5-6000px).
+    # scrolling=False → single browser scrollbar.
+    # height=10000 covers the tallest tab (Metalanguage on mobile).
     components.html(html_content, height=10000, scrolling=False)
 
 
