@@ -301,39 +301,55 @@ def show_admin():
 # ── Student view ──────────────────────────────────────────────────────────────
 
 def show_student():
-    # Thin Streamlit bar: name on the left, logout button on the right.
-    # Logout must live here (not in the iframe) because Streamlit Cloud's
-    # sandbox blocks window.top navigation from inside components.html.
+    # Thin bar: name + bare logout icon.
+    # Logout must live here (Streamlit layer) — the iframe sandbox blocks
+    # window.top navigation from inside components.html.
     st.markdown(
         """
         <style>
-        .student-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 12px 4px 16px;
-            background: var(--background-color, #ffffff);
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            min-height: 38px;
+        /* Strip box from the logout button — make it a bare icon */
+        div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 2px 6px !important;
+            font-size: 17px !important;
+            opacity: 0.55;
+            border-radius: 50% !important;
+            transition: opacity 0.15s, background 0.15s !important;
+            min-height: unset !important;
+            height: 28px !important;
+            width: 28px !important;
+            line-height: 1 !important;
         }
-        .student-bar-name {
+        div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button:hover {
+            opacity: 1 !important;
+            background: rgba(0,0,0,0.08) !important;
+        }
+        /* Name label alignment */
+        div[data-testid="stHorizontalBlock"] p {
+            margin: 0;
+            line-height: 28px;
             font-size: 13px;
             opacity: 0.65;
             white-space: nowrap;
+        }
+        /* Collapse gap between columns */
+        div[data-testid="stHorizontalBlock"] {
+            gap: 0 !important;
+            padding: 4px 12px !important;
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+            align-items: center !important;
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
-    col_name, col_logout = st.columns([9, 1])
+    col_name, col_btn = st.columns([10, 1])
     with col_name:
-        st.markdown(
-            f'<p class="student-bar-name">👤 {st.session_state.display_name}</p>',
-            unsafe_allow_html=True,
-        )
-    with col_logout:
-        if st.button("⏻", key="student_logout", help="Log out",
-                     use_container_width=True):
+        st.markdown(f"👤 **{st.session_state.display_name}**")
+    with col_btn:
+        if st.button("⏻", key="student_logout", help="Log out"):
             for k in ("logged_in", "username", "role", "display_name"):
                 st.session_state[k] = False if k == "logged_in" else ""
             st.rerun()
