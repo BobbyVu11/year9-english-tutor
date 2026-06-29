@@ -135,17 +135,6 @@ if "logged_in" not in st.session_state:
     st.session_state.role = ""
     st.session_state.display_name = ""
 
-# ── Handle logout triggered from inside the iframe ────────────────────────────
-# The iframe's logout button navigates window.top to ?action=logout.
-# We detect that here, clear the session, then redirect to the clean URL.
-if st.query_params.get("action") == "logout":
-    st.session_state.logged_in = False
-    st.session_state.username = ""
-    st.session_state.role = ""
-    st.session_state.display_name = ""
-    st.query_params.clear()
-    st.rerun()
-
 
 # ── Login page ─────────────────────────────────────────────────────────────────
 
@@ -312,8 +301,43 @@ def show_admin():
 # ── Student view ──────────────────────────────────────────────────────────────
 
 def show_student():
-    # No separate Streamlit welcome bar — the username + logout ⏻ icon live
-    # inside the iframe header alongside the theme toggle.
+    # Thin Streamlit bar: name on the left, logout button on the right.
+    # Logout must live here (not in the iframe) because Streamlit Cloud's
+    # sandbox blocks window.top navigation from inside components.html.
+    st.markdown(
+        """
+        <style>
+        .student-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 12px 4px 16px;
+            background: var(--background-color, #ffffff);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            min-height: 38px;
+        }
+        .student-bar-name {
+            font-size: 13px;
+            opacity: 0.65;
+            white-space: nowrap;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    col_name, col_logout = st.columns([9, 1])
+    with col_name:
+        st.markdown(
+            f'<p class="student-bar-name">👤 {st.session_state.display_name}</p>',
+            unsafe_allow_html=True,
+        )
+    with col_logout:
+        if st.button("⏻", key="student_logout", help="Log out",
+                     use_container_width=True):
+            for k in ("logged_in", "username", "role", "display_name"):
+                st.session_state[k] = False if k == "logged_in" else ""
+            st.rerun()
+
     _render_tutor(st.session_state.username, st.session_state.display_name)
 
 
