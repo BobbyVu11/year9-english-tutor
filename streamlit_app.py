@@ -179,32 +179,44 @@ def _logout():
 
 
 def _show_bar(icon: str, name: str, btn_key: str) -> bool:
-    """Render the slim identity bar. Returns True when logout is clicked."""
+    """
+    Renders '👤 Bobby Vu ⏻' as a single inline HTML bar.
+    The visible ⏻ is styled HTML; clicking it triggers a hidden st.button()
+    via JavaScript so logout uses Streamlit's WebSocket (no page navigation).
+    """
     st.markdown(
         f"""
         <style>
-        .sbar-wrap {{
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 5px 16px; border-bottom: 1px solid rgba(0,0,0,0.08);
-            font-size: 13px; opacity: 0.7;
+        .sbar {{
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 14px; font-size: 13px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }}
-        /* Strip box from the logout button rendered immediately after this div */
-        .sbar-wrap + div button {{
-            background: none !important; border: none !important;
-            box-shadow: none !important; color: #c0392b !important;
-            font-size: 17px !important; height: 30px !important;
-            min-height: unset !important; padding: 0 6px !important;
-            border-radius: 50% !important; opacity: 0.7;
+        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
+        .sbar-logout-icon {{
+            color: #c0392b; font-size: 16px; cursor: pointer;
+            opacity: 0.75; padding: 2px 5px; border-radius: 50%;
+            transition: opacity 0.15s, background 0.15s; line-height: 1;
+            user-select: none;
         }}
-        .sbar-wrap + div button:hover {{
-            background: rgba(192,57,43,0.1) !important; opacity: 1 !important;
+        .sbar-logout-icon:hover {{
+            opacity: 1; background: rgba(192,57,43,0.12);
+        }}
+        /* Hide the real Streamlit button — JS will click it invisibly */
+        div[data-testid="stButton"]:has(button[title="{btn_key}"]) {{
+            position: absolute; visibility: hidden;
+            height: 0; overflow: hidden; margin: 0;
         }}
         </style>
-        <div class="sbar-wrap">{icon} {name}</div>
+        <div class="sbar">
+          <span class="sbar-name">{icon} {name}</span>
+          <span class="sbar-logout-icon" title="Log out"
+                onclick="document.querySelector('button[title=&quot;{btn_key}&quot;]').click()">⏻</span>
+        </div>
         """,
         unsafe_allow_html=True,
     )
-    return st.button("⏻", key=btn_key, help="Log out")
+    return st.button("⏻", key=btn_key, help=btn_key)
 
 
 def show_admin():
