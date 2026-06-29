@@ -392,6 +392,7 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
             <option value="academic">Academic words</option>
             <option value="literary">Literary terms</option>
             <option value="analytical">Analytical verbs</option>
+            <option value="persuasive">Persuasive language</option>
           </select>
         </div>
         <div class="vgrid" id="vgrid"></div>
@@ -458,24 +459,42 @@ var wTasks = {
     { p: "'Social media does more harm than good to teenagers.' Write a persuasive piece arguing for OR against this statement.", t: "Open with a strong thesis. Use at least 3 TEEL paragraphs. Include a rhetorical question and appeal to logos (statistics or evidence)." },
     { p: "'Students should be allowed to choose their own curriculum.' Argue a position with reference to specific evidence.", t: "Anticipate a counterargument in your third body paragraph and rebut it — this demonstrates sophisticated reasoning." },
     { p: "Write an opinion piece for a school newspaper: 'Year 9 students should be required to study a second language.'", t: "Use inclusive language ('we', 'our community') to build rapport with your reader. End with a memorable call to action." },
-    { p: "'Artificial intelligence will eventually replace most human jobs.' Construct a persuasive argument about the implications of this statement.", t: "Layer your evidence — move from anecdote → statistics → expert opinion for maximum persuasive impact." }
+    { p: "'Artificial intelligence will eventually replace most human jobs.' Construct a persuasive argument about the implications of this statement.", t: "Layer your evidence — move from anecdote → statistics → expert opinion for maximum persuasive impact." },
+    { p: "Write a persuasive speech arguing that climate change education should be compulsory in all Victorian schools.", t: "Use statistics early to establish credibility, then pivot to emotional appeal. End with an urgent call to action directed at policymakers." },
+    { p: "'Homework should be abolished in secondary schools.' Construct a persuasive argument either for or against.", t: "Acknowledge what homework defenders value (discipline, practice), then undercut it. Conceding a point before defeating it strengthens your credibility." },
+    { p: "Write a letter to the editor arguing that zoos cause more harm than good to the animals they house.", t: "Qualify your position — distinguish between well-funded conservation programs and poorly run facilities. Nuance is more persuasive than black-and-white claims." },
+    { p: "'The voting age should be lowered to 16.' Write a persuasive piece arguing for this proposition.", t: "Pre-empt the 'too immature' counterargument with specific evidence. Concrete examples (16-year-olds paying tax, working, driving) are stronger than abstract rights claims." },
+    { p: "Write an opinion piece: 'Schools focus too much on exams and not enough on real-world skills.'", t: "Define what 'real-world skills' means before arguing. Vague terms weaken arguments; specific definitions strengthen them." }
   ],
   analytical: [
     { p: "Analyse how a text you have studied this year constructs a particular view of power. Use specific evidence from the text.", t: "Avoid plot summary. Every sentence should be analytical. Use: technique → quotation → effect on reader." },
     { p: "'Authors use setting to reflect character.' Analyse how this is true in a text you have studied.", t: "Deep analysis of one or two key moments outscores surface coverage of many. Go narrow and deep." },
     { p: "How does an author use language to position readers to sympathise with a character? Analyse using close textual evidence.", t: "Identify the specific technique (e.g. free indirect discourse, loaded diction) before discussing its effect. Precise metalanguage is rewarded." },
-    { p: "Analyse how the author creates tension in a key scene from your studied text.", t: "Structure your paragraph: name the technique → embed the quote → discuss effect on reader → link to author's broader purpose." }
+    { p: "Analyse how the author creates tension in a key scene from your studied text.", t: "Structure your paragraph: name the technique → embed the quote → discuss effect on reader → link to author's broader purpose." },
+    { p: "Analyse how a composer uses symbolism to develop a central theme in a text you have studied.", t: "Track the symbol across the text — how does its meaning deepen or shift? A symbol that changes is more interesting to write about than one that stays fixed." },
+    { p: "Analyse how structure shapes meaning in a text you have studied. Consider how the order of events or ideas influences the reader.", t: "Structure includes chronology, narrative point of view, chapter breaks, and withheld information. Think beyond 'it has three acts'." },
+    { p: "Analyse how an unreliable narrator creates tension or complexity in a text you have studied.", t: "Define reliability carefully: what does the narrator conceal, misunderstand, or distort? Your job is to show the gap between what they say and what the reader understands." },
+    { p: "Analyse how the author uses contrast to expose a theme or social concern in a text you have studied.", t: "Contrast can be between characters, settings, time periods, or language registers. Identify what the contrast is designed to reveal, not just what it describes." },
+    { p: "How does the author's use of voice shape the reader's interpretation of events in a text you have studied?", t: "Consider: Is the voice first or third person? Reliable or unreliable? Intimate or detached? Each choice positions the reader differently toward the material." }
   ],
   creative: [
     { p: "Write the opening of a short story in which the protagonist discovers something that changes their understanding of their family.", t: "Establish voice in the first sentence. Show character through action and dialogue, not description." },
     { p: "Continue this line: 'The letter had been under the floorboards for forty years, and now that she had found it, she wished she had not.' Write the next 250–350 words.", t: "Create tension by withholding information. Vary sentence length — short sentences accelerate pace; long ones build atmosphere." },
     { p: "Write a monologue from the perspective of a person leaving their hometown for the last time.", t: "Use first person present tense for immediacy. Mix sensory memory (smell, sound) with the character's internal conflict." },
-    { p: "Write a scene in which two characters who have not spoken for years meet unexpectedly.", t: "Let subtext do the work. What characters do NOT say is often more powerful than what they say. Use action and pause." }
+    { p: "Write a scene in which two characters who have not spoken for years meet unexpectedly.", t: "Let subtext do the work. What characters do NOT say is often more powerful than what they say. Use action and pause." },
+    { p: "Write a scene in which a character discovers an old photograph that contradicts everything they believed about their family.", t: "The photograph should raise questions, not answer them. Let the character's reaction carry the emotional weight — what do they do? Stay still? Sit down? Put it back?" },
+    { p: "Write the closing scene of a story about a friendship that has reached its natural end — not through argument, but through drift.", t: "Resist the urge to explain. Trust image and action. What object, gesture, or small moment captures what cannot be said between two people?" },
+    { p: "Write a scene set on public transport in which the point-of-view character observes a stranger and draws a completely wrong conclusion about them.", t: "Play with dramatic irony — let the reader sense the gap between the narrator's interpretation and the truth. The reveal can be subtle or stark." },
+    { p: "Write the opening of a story told from the perspective of someone who is about to make an irreversible decision.", t: "Slow time down. The moment before a decision is often richer than the decision itself. What does the character notice? What do they avoid thinking about?" },
+    { p: "Write a piece of flash fiction (200–300 words) in which a single ordinary object carries the emotional weight of the whole story.", t: "Flash fiction demands compression. Choose your object carefully — it should be specific, not symbolic in an obvious way. Let the meaning accumulate around it." }
   ],
   expository: [
     { p: "Explain what makes a text 'literary'. Use examples from texts you have encountered.", t: "Define your key terms in the introduction. Use hedging language ('tends to', 'often') to show nuanced thinking." },
     { p: "Explain how context shapes the way a composer creates meaning in a text.", t: "Context = historical, cultural, biographical. Integrate context into analysis rather than treating it as a separate paragraph." },
-    { p: "Explain the difference between theme and message in literary texts, using examples.", t: "Theme is what a text explores; message is what it says about that theme. Distinguish clearly and illustrate with specific examples." }
+    { p: "Explain the difference between theme and message in literary texts, using examples.", t: "Theme is what a text explores; message is what it says about that theme. Distinguish clearly and illustrate with specific examples." },
+    { p: "Explain what makes a literary villain compelling. Use examples from texts you have encountered.", t: "The most memorable villains are comprehensible, not cartoonish. Consider what they reveal about the values or anxieties of the text's society." },
+    { p: "Explain how language can be used to manipulate a reader or listener. Use at least two specific techniques in your answer.", t: "Move beyond saying language 'tricks' people — explain the specific mechanism. How does a technique exploit an assumption or emotion?" },
+    { p: "Explain the concept of perspective in narrative fiction. How does point of view shape what a reader knows and believes?", t: "Consider: first person vs. third person, limited vs. omniscient. The key insight is that every perspective involves exclusion as well as revelation." }
   ]
 };
 
@@ -538,6 +557,60 @@ var passages = [
       { q: "What is meant by 'the true inheritance' in the final sentence?", opts: ["The house and the physical possessions left behind", "The financial value of the estate", "The regret over missed conversations and connection", "The responsibility of looking after the books and chair"], ans: 2, exp: "The final sentence reframes the entire passage. 'Inheritance' is used ironically — the real legacy is not material objects but the absence of intimacy, the 'conversations she had failed to start'. The turn is the emotional core of the piece." },
       { q: "What is the effect of listing the objects in the second-to-last sentence?", opts: ["It shows how wealthy the father was", "It builds a rhythm that makes the final clause more powerful by contrast", "It suggests the narrator doesn't value possessions", "It creates a sense of chaos and disorder"], ans: 1, exp: "The triple list — 'not the house, not the books, not the worn green chair' — creates an accumulating rhythm that is then deliberately deflated by the true revelation ('but the conversations she had failed to start'). The list makes the emotional punch land harder." }
     ]
+  },
+  {
+    title: "The interview",
+    text: "Daniel had rehearsed every answer. He had researched the company, practised the firm handshake, worn the tie his mother had bought him — the one with small blue diamonds that made him feel, she said, like someone capable of anything. But when the interviewer asked him to describe his greatest weakness, what came out was the truth. 'I overthink everything,' he said. 'I run through every possible outcome until I can't move. Like right now.' There was a pause. Then the interviewer wrote something down, and Daniel could not decide if that was good or disastrous.",
+    qs: [
+      { q: "What does the tie represent in the passage?", opts: ["Daniel's wealth and social status", "His mother's belief in him and the performance of confidence", "His professional experience in business", "His discomfort with formal clothing"], ans: 1, exp: "The tie is a prop — it represents his mother's investment in him and the constructed nature of confidence. 'Someone capable of anything' reveals this is about performance as much as reality." },
+      { q: "Why is it significant that Daniel 'told the truth'?", opts: ["He was too nervous to lie effectively", "He had been advised to be honest in interviews", "It is presented as an involuntary breach of his prepared performance", "He believed honesty was the best strategy"], ans: 2, exp: "The phrase 'what came out was the truth' implies he didn't choose it — it escaped. This creates vulnerability and irony: the one thing he cannot control is himself, which is exactly the weakness he describes." },
+      { q: "What effect does the final sentence create?", opts: ["It reassures the reader that Daniel will get the job", "It resolves the tension with a definitive outcome", "It leaves the reader in the same state of uncertainty as Daniel", "It shows Daniel is confident despite his nerves"], ans: 2, exp: "The ending refuses resolution — we end in Daniel's anxiety, unable to interpret the note, mirroring his paralysis. The form enacts the content: the passage itself 'overthinks' the pause." }
+    ]
+  },
+  {
+    title: "Leaving",
+    text: "The morning I left, the city looked exactly as it always had. This was the disappointment. I had expected it to do something — register, at least, that I was going. But the trams ran on time, the coffee shops opened, the schoolchildren in yellow vests crossed at the lights, and none of it knew that I was disappearing from it. I understood then that a city does not hold you. It simply continues. And perhaps that is what I had been learning all along: that belonging is not a place you find, but a decision you make, and I had been too afraid to make it.",
+    qs: [
+      { q: "What does the narrator expect the city to do, and why is this significant?", opts: ["They expect it to look different, and are reassured when it does not", "They expect the city to acknowledge their departure, revealing a need to feel significant", "They expect to feel sadness but feel relief instead", "They expect people on the street to recognise them"], ans: 1, exp: "Expecting a city to 'register' your departure is an irrational but deeply human desire to matter. Its ordinariness is 'the disappointment' — the city's indifference exposes the narrator's need for significance." },
+      { q: "What technique appears in 'the trams ran on time, the coffee shops opened, the schoolchildren… crossed at the lights'?", opts: ["Metaphor", "Anaphora", "Accumulation — a list to emphasise continuity", "Foreshadowing"], ans: 2, exp: "The listing of ordinary actions accumulates to emphasise the relentless continuity of city life. Each item is unremarkable; together they form a wall of indifference that the narrator cannot penetrate." },
+      { q: "What does the narrator conclude about 'belonging'?", opts: ["It is determined by how long you live somewhere", "It is something a city gives you if you earn it", "It is an active choice rather than a passive discovery", "It is impossible to achieve in a large city"], ans: 2, exp: "The final sentence reframes belonging from something found (passive, external) to something decided (active, internal). The narrator's realisation is also an admission of avoidance — they were 'too afraid to make it'." }
+    ]
+  },
+  {
+    title: "The garden in winter",
+    text: "My grandfather tended a garden that produced, by the end of summer, more tomatoes than any family could eat. He gave them away by the bagful to neighbours who didn't always ask for them. After he died, the garden returned to lawn within a year. Not because no one cared, but because caring for it, we realised, had always been about him — the ritual of it, the company of it, the particular way he held a tomato to the light to check its colour before he picked it. A garden, we learned, does not grieve. It simply becomes what the weather makes it.",
+    qs: [
+      { q: "What does the excess of tomatoes suggest about the grandfather?", opts: ["He was wasteful and overplanted", "He found purpose in productivity and generosity", "He was trying to save money by growing food", "He was competing with other gardeners"], ans: 1, exp: "The excess is generous rather than wasteful — he gives them away unsolicited. The image of abundance characterises him as someone who created more than he needed and gave freely, making the garden an expression of his personality." },
+      { q: "Why did the garden return to lawn 'not because no one cared'?", opts: ["The family was too busy to tend it", "The plants died in poor weather", "Caring for it was inseparable from the person who made it meaningful", "The neighbours stopped helping with upkeep"], ans: 2, exp: "This is the emotional core: the garden was a medium for connection, not just horticulture. Without the grandfather, the ritual had no meaning. The garden embodied him — not as a symbol, but as a practice." },
+      { q: "What is the effect of the final sentence?", opts: ["It suggests gardens are not worth keeping", "It uses personification to comfort the family", "It offers a quiet, unsentimental acceptance of loss through the image of the garden", "It criticises the family for not maintaining the garden"], ans: 2, exp: "'A garden does not grieve' is a gentle antithesis to the human grief the passage has built. Rather than false comfort, it offers perspective — nature's indifference is presented not as cruelty but as honesty. The garden simply 'becomes what the weather makes it'." }
+    ]
+  },
+  {
+    title: "Screen time",
+    text: "The study found, somewhat predictably, that teenagers who spent more than four hours per day on social media reported higher levels of anxiety. What the headlines missed was the next finding: that teenagers who spent less than thirty minutes per day reported similar levels. The sweet spot — one to two hours — correlated with the lowest reported anxiety. Researchers were careful to note that correlation is not causation. But the pattern suggested something that parents and platform designers have long preferred not to consider: that the relationship between digital connection and wellbeing is not a simple line. It is a curve.",
+    qs: [
+      { q: "What does 'somewhat predictably' suggest about the first finding?", opts: ["The researchers were surprised by the result", "The writer implies this finding merely confirms a widely-held assumption", "The data was unreliable", "The result was predicted by all parents surveyed"], ans: 1, exp: "'Somewhat predictably' signals the writer's awareness that this finding will not surprise readers. This prepares the reader for the more surprising finding that follows, making the structure itself argumentative." },
+      { q: "Why is the distinction between 'correlation' and 'causation' important?", opts: ["It shows the researchers were unsure of their methodology", "It qualifies the claims so the reader cannot draw direct conclusions from the data alone", "It suggests the study was not rigorous", "It is a legal requirement for academic publications"], ans: 1, exp: "The distinction is a crucial qualifier — it prevents the reader from inferring that social media directly causes anxiety. This is responsible hedging: the writer is careful not to overstate what the data shows." },
+      { q: "What does 'not a simple line — it is a curve' mean?", opts: ["Social media use increases steadily over time", "The relationship between screen time and wellbeing is more complex than 'more is worse'", "Anxiety levels rise and fall unpredictably", "The data was displayed on a curved graph"], ans: 1, exp: "The metaphor reframes the assumption that less screen time always equals better mental health. The curve — worse outcomes at both extremes, best in the middle — challenges the binary logic of most media coverage on this topic." }
+    ]
+  },
+  {
+    title: "The letter",
+    text: "She had written the letter three times. The first version was honest. The second was kind. The third was both, and she put it in the drawer. She was not ready to send something that told the truth and excused nothing, that asked for neither forgiveness nor understanding, but simply offered what had happened as a fact — the way a weather report offers rain, without apology or explanation. She left it in the drawer for a week. Then she posted it, on a grey Tuesday, the way you might do something difficult — quickly, before you could think too carefully about it.",
+    qs: [
+      { q: "What does the contrast between the three versions reveal?", opts: ["She is indecisive and cannot commit to any view", "She is working toward a version that is both truthful and compassionate, which is the hardest to achieve", "She is trying to manipulate the recipient with a crafted message", "She changes her mind about what she wants to say each time"], ans: 1, exp: "The progression — honest, then kind, then both — shows moral development. The third version is hardest because it refuses to sacrifice truth for comfort or comfort for truth. The difficulty is the point." },
+      { q: "What is the effect of comparing the letter to 'a weather report'?", opts: ["It suggests the letter is boring and impersonal", "It positions the truth as neutral and factual, requiring neither apology nor justification", "It implies the writer is emotionally detached", "It shows she is a practical person who dislikes drama"], ans: 1, exp: "The simile strips the letter of self-justification. A weather report doesn't apologise for rain — it simply reports. The comparison shows the writer wants to offer events without seeking absolution, which is a form of integrity." },
+      { q: "What does posting the letter 'on a grey Tuesday' suggest?", opts: ["The weather influenced her decision", "Tuesdays are significant in the story's context", "The ordinary moment undercuts the emotional weight — difficult things happen in unremarkable moments", "She was in a hurry to reach the post box"], ans: 2, exp: "'Grey Tuesday' is deliberately anticlimactic. The most emotionally charged act in the passage happens in an unremarkable setting. The mundane container makes the action more realistic, not less significant — this is a common literary technique." }
+    ]
+  },
+  {
+    title: "On reading slowly",
+    text: "We no longer read — we scan. The eye moves across the line looking for the noun and the verb, for the information, discarding everything else. Poetry, which depends on everything else, has become unreadable to many people. Not because it is difficult, but because it is slow, and we have forgotten that slowness can be a form of attention rather than a failure of efficiency. A poem asks you to stay in one place. It asks you to return. It asks you to notice what you missed the first time, and then the second, and it rewards you not with more information but with more of itself.",
+    qs: [
+      { q: "What does 'we no longer read — we scan' imply about modern reading habits?", opts: ["Most people are struggling with literacy", "Reading has become extractive and utilitarian, losing depth of engagement", "Modern texts are written to be scanned", "People read faster because they are more intelligent"], ans: 1, exp: "The dash creates a pointed contrast. 'Scan' degrades reading — it implies hunting for utility rather than dwelling in language. The writer positions this as a cultural loss, not merely a changed habit." },
+      { q: "Why does the writer say poetry is 'unreadable' not because it is difficult but because it is slow?", opts: ["Poetry uses too many difficult words", "Speed is now valued over depth, making poetry's demand for sustained attention feel like a deficiency", "Poetry is taught poorly in schools", "Most people prefer prose fiction"], ans: 1, exp: "This reframes the usual explanation (poetry is hard) as a misdirection. The real problem is cultural: slowness is no longer valued. The writer recuperates slowness as 'a form of attention' — revaluing what efficiency culture discards." },
+      { q: "What does 'more of itself' mean in the final sentence?", opts: ["The poem becomes longer each time you read it", "Re-reading a poem reveals its own internal richness rather than external information", "The poem rewards faster readers with more content", "You understand the poem more quickly on re-reading"], ans: 1, exp: "'More of itself' means the poem's reward is not information but depth — on each reading, you perceive more of what was always there. The idea challenges a utilitarian model of reading and repositions attention as its own reward." }
+    ]
   }
 ];
 
@@ -552,7 +625,12 @@ var vocabSets = {
     { w: "Paradoxical",   d: "Seemingly contradictory yet revealing a deeper truth.", e: "It is paradoxical that the pressure to succeed can prevent achievement." },
     { w: "Corroborate",   d: "To confirm or give support to a statement or theory.", e: "This evidence corroborates the interpretation that the author is critical of capitalism." },
     { w: "Insidious",     d: "Proceeding in a gradual, subtle way, but with harmful effects.", e: "The insidious erosion of trust made the relationship impossible to repair." },
-    { w: "Juxtapose",     d: "To place two things side by side for contrasting effect.", e: "The author juxtaposes wealth and poverty to expose social inequality." }
+    { w: "Juxtapose",     d: "To place two things side by side for contrasting effect.", e: "The author juxtaposes wealth and poverty to expose social inequality." },
+    { w: "Dichotomy",    d: "A division or contrast between two things that are entirely different.", e: "The text presents a false dichotomy between tradition and progress." },
+    { w: "Rhetoric",     d: "Language designed to persuade or impress; the art of effective speaking or writing.", e: "The politician's rhetoric was compelling but ultimately empty of substance." },
+    { w: "Implicit",     d: "Suggested or understood without being directly stated.", e: "The author's criticism of consumerism is implicit rather than overt." },
+    { w: "Cogent",       d: "Clear, logical, and convincing.", e: "She constructed a cogent argument that was difficult to refute." },
+    { w: "Hegemony",     d: "Leadership or dominance of one social group over others.", e: "The novel challenges the cultural hegemony of the ruling class." }
   ],
   literary: [
     { w: "Foreshadowing", d: "A hint or warning of a future event in the narrative.", e: "The dark clouds at the opening foreshadow the tragedy to come." },
@@ -564,7 +642,12 @@ var vocabSets = {
     { w: "Anaphora",      d: "Repetition of a word or phrase at the start of successive clauses.", e: "Churchill's repeated 'we shall fight' builds cumulative resolve." },
     { w: "Pathetic fallacy", d: "Using the natural environment to reflect a character's emotional state.", e: "The storm mirrors the protagonist's inner turmoil." },
     { w: "Ellipsis",      d: "The omission of words; or trailing off mid-sentence to suggest hesitation or continuation.", e: "The ellipsis at the chapter's end invites the reader to complete the thought." },
-    { w: "Polyphony",     d: "The presence of multiple distinct narrative voices within a text.", e: "The novel's polyphony refuses a single authoritative interpretation." }
+    { w: "Polyphony",     d: "The presence of multiple distinct narrative voices within a text.", e: "The novel's polyphony refuses a single authoritative interpretation." },
+    { w: "Catharsis",    d: "The release of emotional tension, especially through art or tragedy.", e: "The final act provides catharsis for an audience that has endured the protagonist's suffering." },
+    { w: "Hubris",       d: "Excessive pride or self-confidence that leads to a character's downfall.", e: "Macbeth's hubris drives him to acts of cruelty that ultimately destroy him." },
+    { w: "Denouement",   d: "The final resolution of a plot, after the climax.", e: "The denouement reveals the full consequences of the character's choices." },
+    { w: "Soliloquy",    d: "A speech in which a character reveals thoughts aloud while alone on stage.", e: "Hamlet's soliloquy exposes his paralysis between thought and action." },
+    { w: "Epiphany",     d: "A sudden moment of realisation or insight experienced by a character.", e: "The protagonist's epiphany in the final chapter reframes everything the reader has witnessed." }
   ],
   analytical: [
     { w: "Conveys",       d: "Communicates or makes known (a feeling, idea, or impression).", e: "The author conveys a sense of inevitability through the passive voice." },
@@ -576,7 +659,24 @@ var vocabSets = {
     { w: "Challenges",    d: "Questions or puts a belief or assumption under scrutiny.", e: "The text challenges conventional notions of heroism." },
     { w: "Privileges",    d: "Gives greater status or priority to one thing over another.", e: "The narrative privileges the female perspective, sidelining male voices." },
     { w: "Invokes",       d: "Calls upon or refers to something to support a point.", e: "The author invokes the imagery of imprisonment to suggest confinement." },
-    { w: "Juxtaposes",    d: "Places contrasting elements side by side to highlight difference.", e: "The author juxtaposes innocence and experience to destabilise the reader's assumptions." }
+    { w: "Juxtaposes",    d: "Places contrasting elements side by side to highlight difference.", e: "The author juxtaposes innocence and experience to destabilise the reader's assumptions." },
+    { w: "Implicates",   d: "Involves or connects something to a concept or critique.", e: "The narrative implicates the reader in the protagonist's moral failures." },
+    { w: "Interrogates", d: "Critically examines or questions an idea or assumption.", e: "The text interrogates the concept of loyalty, ultimately finding it morally ambiguous." },
+    { w: "Destabilises", d: "Undermines the stability or certainty of an idea or expectation.", e: "The unreliable narrator destabilises the reader's trust in any single account of events." },
+    { w: "Foregrounds",  d: "Brings to the front; gives prominence to a particular element.", e: "The author foregrounds issues of class by setting the novel in two contrasting environments." },
+    { w: "Complicates",  d: "Introduces nuance or difficulty into a seemingly simple idea.", e: "The final chapter complicates the moral clarity the reader assumed in the opening." }
+  ],
+  persuasive: [
+    { w: "Anecdote",           d: "A short personal story used to illustrate or introduce an argument.", e: "The speech opened with an anecdote about a flood-affected family — an effective appeal to pathos." },
+    { w: "Logos",              d: "Appeal to logic and reason, typically through evidence, statistics, or structured argument.", e: "Her use of logos — citing three peer-reviewed studies — made the argument difficult to dismiss." },
+    { w: "Ethos",              d: "Appeal to the credibility or authority of the speaker or writer.", e: "By opening with her qualifications, the speaker established her ethos before making any claims." },
+    { w: "Pathos",             d: "Appeal to emotion, designed to evoke empathy, fear, or moral concern.", e: "The advertisement's use of pathos — a child's face, a plea — bypassed rational evaluation entirely." },
+    { w: "Hyperbole",          d: "Deliberate exaggeration for rhetorical emphasis.", e: "'We have been waiting for this change for a thousand years' — a hyperbole that conveys urgency over literal time." },
+    { w: "Inclusive language", d: "Language using 'we', 'our', 'us' to create solidarity between speaker and audience.", e: "Inclusive language positions the audience as part of the solution, not passive observers." },
+    { w: "Emotive language",   d: "Language chosen for its emotional impact rather than purely factual content.", e: "Describing the policy as 'cruel' and 'heartless' uses emotive language to shape the reader's moral judgement." },
+    { w: "Counterargument",    d: "An opposing view that a writer acknowledges before rebutting it.", e: "Addressing the counterargument early signals intellectual honesty and strengthens overall credibility." },
+    { w: "Alliteration",       d: "Repetition of initial consonant sounds to create rhythm and memorability.", e: "'Safe, sustainable, sensible' — alliteration that makes the slogan easier to recall." },
+    { w: "Tricolon",           d: "A series of three parallel elements used for rhetorical balance and emphasis.", e: "'Government of the people, by the people, for the people' is a tricolon that creates a sense of completeness." }
   ]
 };
 
@@ -586,7 +686,17 @@ var gapQs = [
   { s: "The recurring image of water serves as a ___ for emotional instability throughout the novel.", opts: ["foreshadowing", "motif", "juxtaposition", "anaphora"], ans: 1 },
   { s: "By ___ wealth and poverty, Dickens exposes the hypocrisy of Victorian society.", opts: ["subverting", "conveying", "juxtaposing", "eliciting"], ans: 2 },
   { s: "The author's use of pathetic fallacy ___ the protagonist's sense of isolation.", opts: ["challenges", "invokes", "reinforces", "privileges"], ans: 2 },
-  { s: "The narrator's account of events is ___; the reader must look elsewhere for the truth.", opts: ["nuanced", "equivocal", "tenuous", "paradoxical"], ans: 1 }
+  { s: "The narrator's account of events is ___; the reader must look elsewhere for the truth.", opts: ["nuanced", "equivocal", "tenuous", "paradoxical"], ans: 1 },
+  { s: "The speech's opening ___ about a flood-affected family was designed to build an immediate emotional connection.", opts: ["metaphor", "anecdote", "counterargument", "alliteration"], ans: 1 },
+  { s: "The narrator's revelation ___ the reader's assumptions, forcing a reconsideration of everything that came before.", opts: ["reinforces", "privileges", "destabilises", "invokes"], ans: 2 },
+  { s: "Dickens uses two contrasting households to ___ wealth and poverty in Victorian England.", opts: ["subvert", "juxtapose", "convey", "elicit"], ans: 1 },
+  { s: "The essay is deliberately ___ in its argument — it refuses to commit clearly to either side.", opts: ["cogent", "paradoxical", "equivocal", "insidious"], ans: 2 },
+  { s: "The author ___ the traditional heroic narrative by making her protagonist reluctant and afraid.", opts: ["challenges", "constructs", "reinforces", "invokes"], ans: 0 },
+  { s: "By listing the child's lost possessions one by one, the writer creates a strong appeal to ___.", opts: ["logos", "ethos", "pathos", "rhetoric"], ans: 2 },
+  { s: "The protagonist's sudden recognition of his own cruelty functions as an ___ — a moment of clarity that reshapes the narrative.", opts: ["epiphany", "catharsis", "denouement", "anaphora"], ans: 0 },
+  { s: "The repeated hammering of the same phrase at the start of each sentence is an example of ___.", opts: ["antithesis", "anaphora", "sibilance", "free indirect discourse"], ans: 1 },
+  { s: "The character's excessive confidence, which leads directly to his downfall, is a classic example of ___.", opts: ["pathos", "hubris", "catharsis", "ethos"], ans: 1 },
+  { s: "Rather than stating its criticism of capitalism openly, the text ___ it through irony and symbol.", opts: ["foregrounds", "complicates", "conveys", "implicates"], ans: 2 }
 ];
 
 var mlQs = [
@@ -595,7 +705,16 @@ var mlQs = [
   { ex: "'It was the best of times, it was the worst of times.'", opts: ["Simile", "Anaphora with antithesis", "Personification", "Metaphor"], ans: 1, exp: "Both anaphora (repeated 'it was') and antithesis (best/worst) are used. Antithesis places contrasting ideas in parallel structure to highlight the paradox of revolutionary France." },
   { ex: "'The curtains were a sullen red, as though the house itself was angry.'", opts: ["Metaphor", "Pathetic fallacy", "Alliteration", "Understatement"], ans: 1, exp: "Pathetic fallacy attributes human emotions to the environment. 'Sullen' and the house's 'anger' externalise the emotional atmosphere, making the setting reflect inner emotional states." },
   { ex: "'Shall I compare thee to a summer's day? Thou art more lovely and more temperate.'", opts: ["Metaphor", "Rhetorical question opening a comparison", "Personification", "Hyperbole"], ans: 1, exp: "A rhetorical question invites the reader in, then the speaker immediately answers it — positioning the subject as superior to summer. The question is not a real question; it is a device to frame the praise." },
-  { ex: "'Hope is the thing with feathers — that perches in the soul.'", opts: ["Simile", "Metaphor", "Personification", "Oxymoron"], ans: 1, exp: "This is an extended metaphor — hope IS a bird, not merely like one. The metaphor is sustained across the whole poem, giving hope the qualities of lightness, fragility, and persistence." }
+  { ex: "'Hope is the thing with feathers — that perches in the soul.'", opts: ["Simile", "Metaphor", "Personification", "Oxymoron"], ans: 1, exp: "This is an extended metaphor — hope IS a bird, not merely like one. The metaphor is sustained across the whole poem, giving hope the qualities of lightness, fragility, and persistence." },
+  { ex: "'I wandered lonely as a cloud.'", opts: ["Metaphor", "Personification", "Simile", "Oxymoron"], ans: 2, exp: "The comparison uses 'as' — making this a simile, not a metaphor. The comparison between the speaker and a cloud captures aimlessness and solitude through the lightness and formlessness of a cloud." },
+  { ex: "'The fog comes on little cat feet. It sits looking over harbour and city on silent haunches…'", opts: ["Personification", "Simile", "Hyperbole", "Alliteration"], ans: 0, exp: "The fog is given animal qualities — it moves on 'little cat feet' and 'sits'. Personification here creates a sense of the fog as a silent, watchful presence, adding an eerie quality to the description." },
+  { ex: "'To be, or not to be — that is the question.'", opts: ["Antithesis in a rhetorical question", "Anaphora", "Oxymoron", "Sibilance"], ans: 0, exp: "Antithesis places two opposing ideas — being and not being — in a balanced structure. The opposition crystallises Hamlet's dilemma with philosophical precision. It also functions as a rhetorical question, but antithesis is the dominant technique." },
+  { ex: "'It was a bright cold day in April, and the clocks were striking thirteen.'", opts: ["Foreshadowing", "Juxtaposition", "Free indirect discourse", "Pathetic fallacy"], ans: 1, exp: "Orwell juxtaposes the ordinary ('April', 'clocks striking') with the impossible ('thirteen'). The sudden disruption signals that this world operates by different rules — an immediate marker of the dystopian setting of 1984." },
+  { ex: "She thought it was unfair, all of it — the early starts, the cold, the way nobody ever said thank you. But what could she do?", opts: ["First person narration", "Free indirect discourse", "Soliloquy", "Stream of consciousness"], ans: 1, exp: "Free indirect discourse merges third-person narration with a character's thoughts without speech marks. The rhetorical question ('But what could she do?') belongs to the character, not the narrator — creating intimacy without shifting grammatical person." },
+  { ex: "'O Romeo, Romeo, wherefore art thou Romeo?'", opts: ["Apostrophe", "Simile", "Juxtaposition", "Irony"], ans: 0, exp: "Apostrophe is the direct address of an absent, imaginary, or non-human entity. Juliet addresses Romeo as though present when he is not. This is distinct from a rhetorical question — it is the act of direct address that defines it." },
+  { ex: "'All the world's a stage, and all the men and women merely players.'", opts: ["Simile", "Extended metaphor", "Personification", "Hyperbole"], ans: 1, exp: "Shakespeare develops a single comparison — the world as a stage, people as actors — across an entire speech. This is an extended metaphor: one sustained and elaborated over several lines, each adding detail to the central comparison." },
+  { ex: "'We are all born mad. Some remain so.'", opts: ["Oxymoron", "Understatement", "Paradox", "Antithesis"], ans: 2, exp: "Beckett's line seems self-contradictory — but reveals something disturbing: that sanity is the aberration, madness the default. A paradox appears contradictory but holds a deeper truth. The bluntness of the phrasing intensifies the effect." },
+  { ex: "'Stone walls do not a prison make, nor iron bars a cage.'", opts: ["Paradox", "Hyperbole", "Antithesis", "Personification"], ans: 0, exp: "Lovelace's claim contradicts common sense — walls and bars literally do make prisons — but the paradox reveals a philosophical truth: freedom is a state of mind, not a physical condition. The reversal of expectation is the defining feature of paradox." }
 ];
 
 var techRef = [
@@ -612,7 +731,16 @@ var techRef = [
   { n: "Juxtaposition",    d: "Placing contrasting elements side by side to highlight differences or create tension." },
   { n: "Foreshadowing",    d: "Hints at future events — creates tension, a sense of inevitability, or dramatic irony." },
   { n: "Motif",            d: "Recurring image or idea that develops theme. Creates structural coherence across a text." },
-  { n: "Free indirect discourse", d: "Third-person narration that adopts a character's voice and thought patterns without speech marks." }
+  { n: "Free indirect discourse", d: "Third-person narration that adopts a character's voice and thought patterns without speech marks." },
+  { n: "Apostrophe",        d: "Direct address of an absent or imagined person or thing ('O Death, where is thy sting?'). Creates dramatic immediacy." },
+  { n: "Tricolon",          d: "A series of three parallel words, phrases, or clauses. Creates a sense of completeness, balance, and rhetorical weight." },
+  { n: "Hyperbole",         d: "Deliberate exaggeration not meant literally. Emphasises intensity of feeling or dramatic effect." },
+  { n: "Understatement",    d: "Deliberately saying less than is true to create irony, wry humour, or restrained emotional effect." },
+  { n: "Allusion",          d: "An indirect reference to a person, place, event, or text. Assumes shared cultural knowledge in the reader." },
+  { n: "Epiphany",          d: "A moment of sudden realisation for a character that shifts the direction of the narrative." },
+  { n: "Extended metaphor", d: "A metaphor sustained and elaborated across several sentences or a whole text, building a complex comparison." },
+  { n: "Accumulation",      d: "Piling up of details, examples, or descriptions to create a cumulative effect of weight or intensity." },
+  { n: "Paradox",           d: "A statement that seems self-contradictory but reveals an underlying truth upon examination." }
 ];
 
 var teelData = [
