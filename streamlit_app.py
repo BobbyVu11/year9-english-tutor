@@ -301,58 +301,46 @@ def show_admin():
 # ── Student view ──────────────────────────────────────────────────────────────
 
 def show_student():
-    # Thin bar: name + bare logout icon.
-    # Logout must live here (Streamlit layer) — the iframe sandbox blocks
-    # window.top navigation from inside components.html.
+    # Render name + red logout icon as a single inline HTML bar.
+    # The ⏻ button is a bare <button> inside a GET form — clicking it
+    # appends ?_logout=1 to the Streamlit page URL, which we detect below.
+    name = st.session_state.display_name
     st.markdown(
-        """
+        f"""
         <style>
-        /* Strip box from the logout button — make it a bare icon */
-        div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
-            background: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 2px 6px !important;
-            font-size: 17px !important;
-            opacity: 0.55;
-            border-radius: 50% !important;
-            transition: opacity 0.15s, background 0.15s !important;
-            min-height: unset !important;
-            height: 28px !important;
-            width: 28px !important;
-            line-height: 1 !important;
-        }
-        div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button:hover {
-            opacity: 1 !important;
-            background: rgba(0,0,0,0.08) !important;
-        }
-        /* Name label alignment */
-        div[data-testid="stHorizontalBlock"] p {
-            margin: 0;
-            line-height: 28px;
-            font-size: 13px;
-            opacity: 0.65;
-            white-space: nowrap;
-        }
-        /* Collapse gap between columns */
-        div[data-testid="stHorizontalBlock"] {
-            gap: 0 !important;
-            padding: 4px 12px !important;
-            border-bottom: 1px solid rgba(0,0,0,0.07);
-            align-items: center !important;
-        }
+        .sbar {{
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 14px; font-size: 13px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }}
+        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
+        .sbar-logout {{
+            background: none; border: none; cursor: pointer;
+            font-size: 16px; color: #c0392b;
+            opacity: 0.75; padding: 2px 5px;
+            border-radius: 50%;
+            transition: opacity 0.15s, background 0.15s;
+            line-height: 1;
+        }}
+        .sbar-logout:hover {{ opacity: 1; background: rgba(192,57,43,0.12); }}
         </style>
+        <form method="get" style="margin:0;padding:0">
+          <div class="sbar">
+            <span class="sbar-name">👤 {name}</span>
+            <button class="sbar-logout" name="_logout" value="1"
+                    title="Log out" type="submit">⏻</button>
+          </div>
+        </form>
         """,
         unsafe_allow_html=True,
     )
-    col_name, col_btn = st.columns([10, 1])
-    with col_name:
-        st.markdown(f"👤 **{st.session_state.display_name}**")
-    with col_btn:
-        if st.button("⏻", key="student_logout", help="Log out"):
-            for k in ("logged_in", "username", "role", "display_name"):
-                st.session_state[k] = False if k == "logged_in" else ""
-            st.rerun()
+
+    # Detect logout click (form submits ?_logout=1 to the Streamlit page)
+    if st.query_params.get("_logout") == "1":
+        for k in ("logged_in", "username", "role", "display_name"):
+            st.session_state[k] = False if k == "logged_in" else ""
+        st.query_params.clear()
+        st.rerun()
 
     _render_tutor(st.session_state.username, st.session_state.display_name)
 
