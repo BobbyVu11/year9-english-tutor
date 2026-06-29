@@ -851,28 +851,9 @@ var progress = loadProgress();
 
 // ══ Navigation ══════════════════════════════════════════════════
 
-// Tell Streamlit to resize the iframe to exactly fit the current tab's content.
-// Streamlit requires BOTH isStreamlitMessage:true AND type:"streamlit:setFrameHeight".
-function notifyHeight() {
-  function send() {
-    // Use requestAnimationFrame so the browser has painted the new DOM before we measure
-    requestAnimationFrame(function() {
-      var h = Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      );
-      window.parent.postMessage(
-        { isStreamlitMessage: true, type: "streamlit:setFrameHeight", height: h + 32 },
-        "*"
-      );
-    });
-  }
-  // Send immediately after paint, and once more after 800ms for slow mobile layouts
-  send();
-  setTimeout(send, 800);
-}
+// Placeholder — postMessage is blocked by Streamlit Cloud's iframe sandbox.
+// Height is handled entirely by the fixed height in streamlit_app.py.
+function notifyHeight() {}
 
 function showTab(id, btn) {
   document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });

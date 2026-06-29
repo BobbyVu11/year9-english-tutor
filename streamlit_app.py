@@ -82,7 +82,9 @@ if not html_file.exists():
 
 html_content = html_file.read_text(encoding="utf-8")
 
-# scrolling=False = single scrollbar (the browser's own).
-# height=1500 is just the initial render before notifyHeight() fires and
-# resizes the iframe to exactly match the active tab's content height.
-components.html(html_content, height=1500, scrolling=False)
+# scrolling=False = single scrollbar (the browser's own page scroll).
+# Streamlit Cloud's iframe sandbox blocks postMessage resizing, so we use a
+# fixed height tall enough for the longest tab on the smallest screen.
+# Metalanguage on mobile (~320px wide) with 15 questions + 23 reference
+# entries stacked vertically reaches ~5000px. 10000 gives safe headroom.
+components.html(html_content, height=10000, scrolling=False)
