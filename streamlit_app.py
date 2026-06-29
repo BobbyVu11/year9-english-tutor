@@ -180,43 +180,57 @@ def _logout():
 
 def _show_bar(icon: str, name: str, btn_key: str) -> bool:
     """
-    Renders '👤 Bobby Vu ⏻' as a single inline HTML bar.
-    The visible ⏻ is pure HTML; clicking it triggers a hidden st.button()
-    so logout uses Streamlit's WebSocket — no page navigation, one-click login.
+    Renders the identity bar as a true single row: '👤 Bobby Vu  ⏻'
+    Uses st.columns() so the Streamlit button is inline with the name.
+    The .sbar-row marker class lets CSS target only this row's button.
     """
     st.markdown(
-        f"""
+        """
         <style>
-        .sbar {{
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 14px; font-size: 13px;
+        /* Target the logout row by its unique marker class */
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row) {
+            align-items: center !important;
             border-bottom: 1px solid rgba(0,0,0,0.08);
-        }}
-        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
-        .sbar-logout-icon {{
-            color: #c0392b; font-size: 16px; cursor: pointer;
-            opacity: 0.75; padding: 2px 5px; border-radius: 50%;
-            transition: opacity 0.15s, background 0.15s; line-height: 1;
-            user-select: none;
-        }}
-        .sbar-logout-icon:hover {{
-            opacity: 1; background: rgba(192,57,43,0.12);
-        }}
-        /* Hide the real Streamlit button that sits immediately after this block */
-        div[data-testid="stMarkdownContainer"]:has(.sbar)
-            + div[data-testid="stButton"] {{
-            display: none !important;
-        }}
+            padding-top: 2px !important;
+            padding-bottom: 2px !important;
+            gap: 0 !important;
+        }
+        /* Name text */
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row) p {
+            font-size: 13px !important;
+            opacity: 0.65;
+            margin: 0 !important;
+            padding-left: 14px;
+            white-space: nowrap;
+            line-height: 30px;
+        }
+        /* Strip button box — keep only the icon */
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row) button {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: #c0392b !important;
+            font-size: 16px !important;
+            height: 30px !important;
+            width: 30px !important;
+            min-height: unset !important;
+            padding: 0 !important;
+            border-radius: 50% !important;
+            opacity: 0.7;
+            transition: opacity 0.15s, background 0.15s !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row) button:hover {
+            background: rgba(192,57,43,0.1) !important;
+            opacity: 1 !important;
+        }
         </style>
-        <div class="sbar">
-          <span class="sbar-name">{icon} {name}</span>
-          <span class="sbar-logout-icon" title="Log out"
-                onclick="document.querySelector('button[data-testid=&quot;stBaseButton-secondary&quot;]').click()">⏻</span>
-        </div>
         """,
         unsafe_allow_html=True,
     )
-    return st.button("⏻", key=btn_key)
+    col_name, col_btn = st.columns([14, 1])
+    # .sbar-row marker is injected into the name column so :has() can find this row
+    col_name.markdown(f'<span class="sbar-row">{icon} {name}</span>', unsafe_allow_html=True)
+    return col_btn.button("⏻", key=btn_key, help="Log out")
 
 
 def show_admin():
