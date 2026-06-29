@@ -273,10 +273,17 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
 
 /* ── Dark mode toggle ─────────────────────────── */
 #theme-btn {
-  width: 34px; height: 34px; border-radius: var(--radius);
-  border: 1px solid var(--border); background: var(--surface);
-  cursor: pointer; font-size: 16px; display: flex;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: transparent;
+  cursor: pointer; font-size: 17px; display: flex;
   align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  opacity: 0.75;
+}
+#theme-btn:hover {
+  background: var(--border);
+  opacity: 1;
+  transform: scale(1.12);
 }
 
 /* ── Print ────────────────────────────────────── */

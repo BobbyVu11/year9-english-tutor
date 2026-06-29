@@ -78,13 +78,45 @@ st.markdown(
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .block-container {
-            padding-top: 0.6rem;
+            padding-top: 0.35rem;
             padding-bottom: 0;
             padding-left: 1rem;
             padding-right: 1rem;
         }
         iframe[title="streamlit_app.streamlit_app"] {
             overflow: hidden !important;
+        }
+
+        /* ── Welcome bar ── */
+        /* Shrink the gap Streamlit adds above the column row */
+        div[data-testid="stHorizontalBlock"] {
+            align-items: center;
+            gap: 0;
+            margin-bottom: -0.5rem;
+        }
+        /* Welcome text — compact */
+        div[data-testid="stHorizontalBlock"] p {
+            font-size: 13px;
+            margin: 0;
+            color: #555;
+        }
+        /* Log out button — subtle pill */
+        div[data-testid="stButton"] > button {
+            background: transparent !important;
+            border: 1px solid #d0d0d0 !important;
+            color: #888 !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            padding: 3px 14px !important;
+            border-radius: 20px !important;
+            line-height: 1.6 !important;
+            box-shadow: none !important;
+            transition: all 0.15s !important;
+        }
+        div[data-testid="stButton"] > button:hover {
+            background: #f5f5f5 !important;
+            border-color: #aaa !important;
+            color: #333 !important;
         }
         /* Form card background */
         div[data-testid="stForm"] {
