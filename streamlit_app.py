@@ -172,42 +172,44 @@ def show_login():
 
 # ── Admin panel ────────────────────────────────────────────────────────────────
 
-def show_admin():
-    name = st.session_state.display_name
+def _logout():
+    """Clear session — called via st.button() so no page navigation needed."""
+    for k in ("logged_in", "username", "role", "display_name"):
+        st.session_state[k] = False if k == "logged_in" else ""
+
+
+def _show_bar(icon: str, name: str, btn_key: str) -> bool:
+    """Render the slim identity bar. Returns True when logout is clicked."""
     st.markdown(
         f"""
         <style>
-        .sbar {{
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 14px; font-size: 13px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+        .sbar-wrap {{
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 5px 16px; border-bottom: 1px solid rgba(0,0,0,0.08);
+            font-size: 13px; opacity: 0.7;
         }}
-        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
-        .sbar-logout {{
-            background: none; border: none; cursor: pointer;
-            font-size: 16px; color: #c0392b;
-            opacity: 0.75; padding: 2px 5px;
-            border-radius: 50%;
-            transition: opacity 0.15s, background 0.15s;
-            line-height: 1;
+        /* Strip box from the logout button rendered immediately after this div */
+        .sbar-wrap + div button {{
+            background: none !important; border: none !important;
+            box-shadow: none !important; color: #c0392b !important;
+            font-size: 17px !important; height: 30px !important;
+            min-height: unset !important; padding: 0 6px !important;
+            border-radius: 50% !important; opacity: 0.7;
         }}
-        .sbar-logout:hover {{ opacity: 1; background: rgba(192,57,43,0.12); }}
+        .sbar-wrap + div button:hover {{
+            background: rgba(192,57,43,0.1) !important; opacity: 1 !important;
+        }}
         </style>
-        <form method="get" style="margin:0;padding:0">
-          <div class="sbar">
-            <span class="sbar-name">⚙️ {name}</span>
-            <button class="sbar-logout" name="_logout" value="1"
-                    title="Log out" type="submit">⏻</button>
-          </div>
-        </form>
+        <div class="sbar-wrap">{icon} {name}</div>
         """,
         unsafe_allow_html=True,
     )
+    return st.button("⏻", key=btn_key, help="Log out")
 
-    if st.query_params.get("_logout") == "1":
-        for k in ("logged_in", "username", "role", "display_name"):
-            st.session_state[k] = False if k == "logged_in" else ""
-        st.query_params.clear()
+
+def show_admin():
+    if _show_bar("⚙️", st.session_state.display_name, "admin_logout"):
+        _logout()
         st.rerun()
 
     # Show one-shot flash message (set before st.rerun() so it survives)
@@ -524,45 +526,8 @@ window.addEventListener("load", function() {{
 # ── Student view ──────────────────────────────────────────────────────────────
 
 def show_student():
-    # Render name + red logout icon as a single inline HTML bar.
-    # The ⏻ button is a bare <button> inside a GET form — clicking it
-    # appends ?_logout=1 to the Streamlit page URL, which we detect below.
-    name = st.session_state.display_name
-    st.markdown(
-        f"""
-        <style>
-        .sbar {{
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 14px; font-size: 13px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }}
-        .sbar-name {{ opacity: 0.65; white-space: nowrap; }}
-        .sbar-logout {{
-            background: none; border: none; cursor: pointer;
-            font-size: 16px; color: #c0392b;
-            opacity: 0.75; padding: 2px 5px;
-            border-radius: 50%;
-            transition: opacity 0.15s, background 0.15s;
-            line-height: 1;
-        }}
-        .sbar-logout:hover {{ opacity: 1; background: rgba(192,57,43,0.12); }}
-        </style>
-        <form method="get" style="margin:0;padding:0">
-          <div class="sbar">
-            <span class="sbar-name">👤 {name}</span>
-            <button class="sbar-logout" name="_logout" value="1"
-                    title="Log out" type="submit">⏻</button>
-          </div>
-        </form>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Detect logout click (form submits ?_logout=1 to the Streamlit page)
-    if st.query_params.get("_logout") == "1":
-        for k in ("logged_in", "username", "role", "display_name"):
-            st.session_state[k] = False if k == "logged_in" else ""
-        st.query_params.clear()
+    if _show_bar("👤", st.session_state.display_name, "student_logout"):
+        _logout()
         st.rerun()
 
     _render_tutor(st.session_state.username, st.session_state.display_name)
