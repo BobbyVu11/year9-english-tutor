@@ -20,24 +20,23 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Hide Streamlit chrome and remove outer page scroll ─────────────────────
+# ── Hide Streamlit chrome for a cleaner look ───────────────────────────────
 st.markdown(
     """
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
-        /* Remove all padding so iframe fills the page */
         .block-container {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            max-width: 100% !important;
+            padding-top: 0.5rem;
+            padding-bottom: 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
-        /* Hide Streamlit's own page scrollbar — the iframe handles scrolling */
-        html, body { overflow: hidden; }
-        [data-testid="stAppViewContainer"] { overflow: hidden; }
+        /* Hide the iframe's own scrollbar — we use page scroll only */
+        iframe[title="streamlit_app.streamlit_app"] {
+            overflow: hidden !important;
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -83,5 +82,7 @@ if not html_file.exists():
 
 html_content = html_file.read_text(encoding="utf-8")
 
-# height=100vh equivalent via JS — iframe fills the screen, inner app scrolls
-components.html(html_content, height=800, scrolling=True)
+# scrolling=False removes the inner iframe scrollbar.
+# height=2200 is tall enough for the longest tab (metalanguage + tech table).
+# The browser's own page scrollbar is then the only one visible.
+components.html(html_content, height=2200, scrolling=False)
