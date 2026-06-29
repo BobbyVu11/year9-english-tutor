@@ -134,6 +134,7 @@ if "logged_in" not in st.session_state:
     st.session_state.username = ""
     st.session_state.role = ""
     st.session_state.display_name = ""
+    st.session_state.flash = ""   # one-shot success/info message
 
 
 # ── Login page ─────────────────────────────────────────────────────────────────
@@ -209,6 +210,11 @@ def show_admin():
         st.query_params.clear()
         st.rerun()
 
+    # Show one-shot flash message (set before st.rerun() so it survives)
+    if st.session_state.get("flash"):
+        st.success(st.session_state.flash)
+        st.session_state.flash = ""
+
     tab_users, tab_tutor = st.tabs(["👥 Manage Users", "📚 Open Tutor"])
 
     # ── Users tab ─────────────────────────────────────────────────────────────
@@ -243,7 +249,7 @@ def show_admin():
                         "display_name": new_display.strip() or new_username.strip(),
                     })
                     save_users(data)
-                    st.success(f"✅ User '{new_username.strip()}' created.")
+                    st.session_state.flash = f"✅ User '{new_username.strip()}' created successfully."
                     st.rerun()
 
         st.divider()
@@ -287,7 +293,7 @@ def show_admin():
                                 changed = True
                     if changed:
                         save_users(data)
-                        st.success("Changes saved.")
+                        st.session_state.flash = f"✅ Changes saved for '{u['username']}'."
                         st.rerun()
                     else:
                         st.info("Nothing to update — enter a new password or display name.")
@@ -302,7 +308,7 @@ def show_admin():
                             if uu["username"] != u["username"]
                         ]
                         save_users(data)
-                        st.success(f"User '{u['username']}' deleted.")
+                        st.session_state.flash = f"🗑 User '{u['username']}' deleted."
                         st.rerun()
 
         st.divider()
