@@ -194,35 +194,43 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
             padding: 3px 14px !important;
             gap: 4px !important;
         }
+        /* Both columns: shrink to content AND center their contents on one 28px row */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row)
             > div[data-testid="stColumn"] {
             flex: 0 0 auto !important;
             width: auto !important;
             min-width: 0 !important;
-        }
-        /* Name column — remove all default padding/margin so it aligns with button */
-        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
-            > div[data-testid="stColumn"]:first-child {
             display: flex !important;
             align-items: center !important;
+            height: 28px !important;
             padding: 0 !important;
             margin: 0 !important;
         }
+        /* Strip every wrapper inside the columns so nothing adds vertical offset */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row)
-            > div[data-testid="stColumn"]:first-child > div {
+            > div[data-testid="stColumn"] > div,
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"] [data-testid="stMarkdownContainer"],
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"] [data-testid="stVerticalBlock"],
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"] [data-testid="stElementContainer"] {
             padding: 0 !important;
             margin: 0 !important;
             display: flex !important;
             align-items: center !important;
+            height: 28px !important;
         }
-        /* Name text */
+        /* Name text — centered on the same 28px row as the button */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) p {
             font-size: 13px !important;
             opacity: 0.65;
             margin: 0 !important;
             padding: 0 !important;
             white-space: nowrap;
-            line-height: 1 !important;
+            line-height: 28px !important;
+            display: flex !important;
+            align-items: center !important;
         }
         /* Strip button box — bare red icon, properly centred */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button {
