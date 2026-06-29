@@ -514,9 +514,34 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
     <div id="tab-progress" class="section">
       <div class="card">
         <div class="card-title">Your progress</div>
-        <div class="card-sub">Tracks activity across all sections in this browser session</div>
+        <div class="card-sub">Tracks activity across all sections in this browser</div>
         <div class="stats-row" id="stats-row"></div>
       </div>
+
+      <!-- ── Performance level chart ──────────────── -->
+      <div class="card">
+        <div class="card-title">📊 Performance levels</div>
+        <div class="card-sub">Grade awarded after each scored session — track your improvement over time</div>
+        <div id="level-summary" style="display:flex;gap:10px;flex-wrap:wrap;margin:.75rem 0 1rem"></div>
+        <div id="level-chart-wrap" style="position:relative">
+          <canvas id="level-chart"></canvas>
+        </div>
+        <div style="margin-top:.75rem;font-size:12px;color:var(--text3);line-height:1.8">
+          <strong>Grades:</strong>
+          <span style="color:#22c55e">A — Well Above Expectation</span> &nbsp;·&nbsp;
+          <span style="color:#84cc16">B — Above Expectation</span> &nbsp;·&nbsp;
+          <span style="color:#f59e0b">C — At Standard</span> &nbsp;·&nbsp;
+          <span style="color:#f97316">D — Below Expectation</span> &nbsp;·&nbsp;
+          <span style="color:#ef4444">E — Well Below Expectation</span>
+        </div>
+        <div style="margin-top:.5rem;font-size:12px;color:var(--text3)">
+          <span style="display:inline-block;width:12px;height:12px;background:#4a6cf7;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Writing &nbsp;
+          <span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Reading &nbsp;
+          <span style="display:inline-block;width:12px;height:12px;background:#8b5cf6;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Metalanguage &nbsp;
+          <span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Vocabulary
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">Today's writing log</div>
         <div class="card-sub">Your most recent writing response — saved automatically</div>
@@ -524,7 +549,7 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
       </div>
       <div class="card no-print">
         <div class="card-title">Reset progress</div>
-        <div class="card-sub">Clears all stored activity data</div>
+        <div class="card-sub">Clears all stored activity data including the performance chart</div>
         <button class="btn" onclick="resetProgress()">Clear progress</button>
       </div>
     </div>
@@ -538,6 +563,56 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
 // Each user gets their own localStorage namespace so progress
 // is stored separately per account.
 var CURRENT_USER = 'default';
+
+// ══ Performance-level tracking ════════════════════════════════
+// Stores a grade (A-E) for every scored practice session so the
+// Progress tab can draw an improvement chart over time.
+
+var TYPE_COLORS = {
+  "Writing":      "#4a6cf7",
+  "Reading":      "#10b981",
+  "Metalanguage": "#8b5cf6",
+  "Vocabulary":   "#f59e0b"
+};
+var LEVEL_NUM  = { "A": 5, "B": 4, "C": 3, "D": 2, "E": 1 };
+var LEVEL_NAME = {
+  "A": "Well Above Expectation",
+  "B": "Above Expectation",
+  "C": "At Standard / Expected Level",
+  "D": "Below Expectation",
+  "E": "Well Below Expectation"
+};
+var levelChart = null;
+
+function loadLevelData() {
+  try { return JSON.parse(localStorage.getItem("y9levels_" + CURRENT_USER) || "[]"); }
+  catch(e) { return []; }
+}
+function saveLevelData(arr) {
+  localStorage.setItem("y9levels_" + CURRENT_USER, JSON.stringify(arr));
+}
+function pctToLevel(pct) {
+  if (pct >= 0.90) return "A";
+  if (pct >= 0.65) return "B";
+  if (pct >= 0.50) return "C";
+  if (pct >= 0.30) return "D";
+  return "E";
+}
+function recordLevel(type, score, total) {
+  if (total <= 0) return;
+  var pct   = score / total;
+  var level = pctToLevel(pct);
+  var now   = new Date();
+  var label = now.getDate() + " " +
+    ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][now.getMonth()] +
+    " " + now.getFullYear().toString().slice(2);
+  var arr = loadLevelData();
+  arr.push({ ts: now.getTime(), date: label, type: type,
+             score: score, total: total, level: level,
+             pct: Math.round(pct * 100) });
+  saveLevelData(arr);
+  return level;
+}
 
 // ══ Data ═══════════════════════════════════════════════════════
 
@@ -851,6 +926,7 @@ var writingTipsData = [
 var curTask = null;
 var curPassageIdx = 0;
 var rAnswered = 0;
+var rCorrect  = 0; // tracks correct answers for the current passage
 var mlAnswered = {};
 var gapSel = {};
 var progress = loadProgress();
@@ -910,10 +986,12 @@ function inc(key) {
 }
 
 function resetProgress() {
-  if (confirm("Clear all progress data?")) {
+  if (confirm("Clear all progress data including the performance chart?")) {
     localStorage.removeItem("y9progress_" + CURRENT_USER);
     localStorage.removeItem("y9writing_" + CURRENT_USER);
+    localStorage.removeItem("y9levels_"   + CURRENT_USER);
     progress = {};
+    if (levelChart) { levelChart.destroy(); levelChart = null; }
     renderProgress();
   }
 }
@@ -932,6 +1010,121 @@ function renderProgress() {
 
   var wlog = localStorage.getItem("y9writing_" + CURRENT_USER) || "(No writing saved yet — try a writing prompt.)";
   document.getElementById("writing-log").textContent = wlog;
+
+  renderLevelChart();
+}
+
+// ══ Performance chart renderer ═══════════════════════════════════
+
+function renderLevelChart() {
+  var data = loadLevelData();
+  var summaryEl = document.getElementById("level-summary");
+  var wrap      = document.getElementById("level-chart-wrap");
+
+  // ── Summary cards (latest grade per subject) ──────────────────
+  if (summaryEl) {
+    summaryEl.innerHTML = ["Writing","Reading","Metalanguage","Vocabulary"].map(function(t) {
+      var col  = TYPE_COLORS[t];
+      var entries = data.filter(function(d) { return d.type === t; });
+      if (!entries.length) {
+        return '<div style="padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;min-width:110px">' +
+          '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px">' + t + '</div>' +
+          '<div style="font-size:22px;font-weight:700;color:var(--text3)">—</div>' +
+          '<div style="font-size:11px;color:var(--text3)">No data yet</div></div>';
+      }
+      var latest = entries[entries.length - 1];
+      // Trend: compare last two entries
+      var trend = "";
+      if (entries.length >= 2) {
+        var prev = LEVEL_NUM[entries[entries.length - 2].level];
+        var curr = LEVEL_NUM[latest.level];
+        trend = curr > prev ? ' <span style="color:#22c55e">▲</span>' : curr < prev ? ' <span style="color:#ef4444">▼</span>' : ' <span style="color:var(--text3)">→</span>';
+      }
+      return '<div style="padding:10px 14px;background:var(--bg);border:2px solid ' + col + ';border-radius:10px;min-width:120px">' +
+        '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px">' + t + '</div>' +
+        '<div style="font-size:28px;font-weight:700;color:' + col + '">' + latest.level + trend + '</div>' +
+        '<div style="font-size:11px;color:var(--text2);line-height:1.4">' + LEVEL_NAME[latest.level] + '</div>' +
+        '<div style="font-size:10px;color:var(--text3)">' + latest.date + ' · ' + entries.length + ' session' + (entries.length > 1 ? 's' : '') + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  // ── Chart ─────────────────────────────────────────────────────
+  if (!wrap) return;
+
+  if (data.length === 0) {
+    wrap.innerHTML = '<div id="level-chart-wrap" style="text-align:center;color:var(--text3);padding:2.5rem 1rem;font-size:14px">' +
+      'Complete a Writing, Reading, Metalanguage, or Vocabulary session to see your chart.<br>' +
+      '<span style="font-size:12px">Grades appear automatically after each scored activity.</span></div>';
+    return;
+  }
+
+  // Ensure canvas exists
+  if (!document.getElementById("level-chart")) {
+    wrap.innerHTML = '<canvas id="level-chart"></canvas>';
+  }
+  var canvas = document.getElementById("level-chart");
+
+  var isDark   = document.documentElement.getAttribute("data-theme") === "dark";
+  var tickCol  = isDark ? "#aaaaaa" : "#555555";
+  var gridCol  = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)";
+
+  var barColors  = data.map(function(d) { return TYPE_COLORS[d.type]; });
+  var labels     = data.map(function(d) { return d.date + "\n" + d.type.slice(0, 3); });
+
+  if (levelChart) { levelChart.destroy(); levelChart = null; }
+
+  levelChart = new Chart(canvas.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Level",
+        data:            data.map(function(d) { return LEVEL_NUM[d.level]; }),
+        backgroundColor: barColors.map(function(c) { return c + "aa"; }),
+        borderColor:     barColors,
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: function(ctx) {
+              var d = data[ctx[0].dataIndex];
+              return d.type + "  —  " + d.date;
+            },
+            label: function(ctx) {
+              var d = data[ctx.dataIndex];
+              return " Grade " + d.level + ": " + LEVEL_NAME[d.level] + " (" + d.score + "/" + d.total + "  ·  " + d.pct + "%)";
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0, max: 5,
+          ticks: {
+            stepSize: 1,
+            color: tickCol,
+            callback: function(val) {
+              return (["","E — Well Below","D — Below","C — At Standard","B — Above","A — Well Above"])[val] || "";
+            }
+          },
+          grid: { color: gridCol }
+        },
+        x: {
+          ticks: { color: tickCol, maxRotation: 45, font: { size: 11 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
 }
 
 // ══ Writing ══════════════════════════════════════════════════════
@@ -968,7 +1161,12 @@ function checkWriting() {
 
   function tick(ok) { return ok ? '<span style="color:var(--green)">✓</span> ' : '<span style="color:var(--amber)">–</span> '; }
 
-  var r = "<strong>Word count:</strong> " + wc + " &nbsp;|&nbsp; <strong>Avg sentence length:</strong> " + avg + " words<br><br>";
+  // Score 5 criteria → record level
+  var wscore = [wc >= 80, hasQ, hasM, hasV, hasComplex].filter(Boolean).length;
+  var wlvl = recordLevel("Writing", wscore, 5);
+
+  var r = "<strong>Word count:</strong> " + wc + " &nbsp;|&nbsp; <strong>Avg sentence length:</strong> " + avg + " words" +
+    " &nbsp;|&nbsp; <strong>Grade: " + wlvl + " — " + LEVEL_NAME[wlvl] + "</strong><br><br>";
   r += "<strong>Checklist:</strong><br>";
   r += tick(wc >= 80) + "Response length " + (wc >= 80 ? "(aim for 100+ words per paragraph for full development)" : "— aim for 80+ words per paragraph") + "<br>";
   r += tick(hasQ) + "Evidence/quotation " + (hasQ ? "detected" : "— try embedding a specific quote or example") + "<br>";
@@ -1005,6 +1203,7 @@ function newPassage() {
   var prev = curPassageIdx;
   do { curPassageIdx = Math.floor(Math.random() * passages.length); } while (passages.length > 1 && curPassageIdx === prev);
   rAnswered = 0;
+  rCorrect  = 0;
   var p = passages[curPassageIdx];
   document.getElementById("rtext").textContent = p.text;
   document.getElementById("rscore").innerHTML = "";
@@ -1020,13 +1219,19 @@ function newPassage() {
 function answerQ(qi, j) {
   var q = passages[curPassageIdx].qs[qi];
   document.querySelectorAll('[id^="ro' + qi + 'x"]').forEach(function(b) { b.disabled = true; });
-  document.getElementById("ro" + qi + "x" + j).classList.add(j === q.ans ? "ok" : "bad");
+  var isCorrect = (j === q.ans);
+  document.getElementById("ro" + qi + "x" + j).classList.add(isCorrect ? "ok" : "bad");
   document.getElementById("ro" + qi + "x" + q.ans).classList.add("ok");
   document.getElementById("rexp" + qi).innerHTML = "<strong>Explanation:</strong> " + q.exp;
+  if (isCorrect) rCorrect++;
   rAnswered++;
-  document.getElementById("rprog").style.width = Math.round(rAnswered / passages[curPassageIdx].qs.length * 100) + "%";
-  if (rAnswered === passages[curPassageIdx].qs.length) {
-    document.getElementById("rscore").innerHTML = "<strong>Passage complete!</strong> Click ↺ New passage for another text.";
+  var total = passages[curPassageIdx].qs.length;
+  document.getElementById("rprog").style.width = Math.round(rAnswered / total * 100) + "%";
+  if (rAnswered === total) {
+    var lvl = recordLevel("Reading", rCorrect, total);
+    document.getElementById("rscore").innerHTML =
+      "<strong>Passage complete — Grade " + lvl + ": " + LEVEL_NAME[lvl] + "</strong>" +
+      " (" + rCorrect + "/" + total + " correct) &nbsp;|&nbsp; Click ↺ New passage for another text.";
   }
   inc("quiz_ans");
 }
@@ -1083,10 +1288,14 @@ function checkGaps() {
     if (s === q.ans) ok++;
   });
   var n = Object.keys(gapSel).length;
-  document.getElementById("gres").innerHTML = n < gapQs.length
-    ? '<span style="color:var(--amber)">Answer all questions before checking.</span>'
-    : "<strong>Score: " + ok + "/" + gapQs.length + "</strong>" +
-      (ok === gapQs.length ? " — excellent!" : ok >= 4 ? " — good, review the missed ones." : " — review the vocabulary flashcards above and try again.");
+  if (n < gapQs.length) {
+    document.getElementById("gres").innerHTML = '<span style="color:var(--amber)">Answer all questions before checking.</span>';
+  } else {
+    var vlvl = recordLevel("Vocabulary", ok, gapQs.length);
+    document.getElementById("gres").innerHTML =
+      "<strong>Score: " + ok + "/" + gapQs.length + " — Grade " + vlvl + ": " + LEVEL_NAME[vlvl] + "</strong>" +
+      (ok === gapQs.length ? " — perfect!" : ok >= Math.ceil(gapQs.length * 0.7) ? " — good, review the missed ones." : " — review the flashcards above and try again.");
+  }
   inc("quiz_ans");
 }
 
@@ -1125,9 +1334,10 @@ function answerML(el, mi, j) {
   mlAnswered[mi] = (j === q.ans);
   if (Object.keys(mlAnswered).length === mlQs.length) {
     var c = Object.values(mlAnswered).filter(Boolean).length;
+    var mllvl = recordLevel("Metalanguage", c, mlQs.length);
     document.getElementById("mlscore").innerHTML =
-      '<strong>Score: ' + c + '/' + mlQs.length + '</strong> ' +
-      '<span class="badge">' + (c === mlQs.length ? "Perfect!" : c >= 4 ? "Strong!" : "Keep practising") + '</span>';
+      '<strong>Score: ' + c + '/' + mlQs.length + ' — Grade ' + mllvl + ': ' + LEVEL_NAME[mllvl] + '</strong> ' +
+      '<span class="badge">' + (c === mlQs.length ? "Perfect!" : c >= Math.ceil(mlQs.length * 0.7) ? "Strong!" : "Keep practising") + '</span>';
   }
   inc("quiz_ans");
 }
@@ -1142,5 +1352,8 @@ newPrompt();
 loadTEEL();
 loadWritingTips();
 </script>
+
+<!-- Chart.js — loaded last so it is available when renderLevelChart() runs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </body>
 </html>
