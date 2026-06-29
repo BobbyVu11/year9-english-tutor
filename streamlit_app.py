@@ -187,36 +187,43 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
     st.markdown(
         """
         <style>
-        /* Target the logout row by its unique marker class */
+        /* Make both columns shrink to content width so button sits next to name */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) {
             align-items: center !important;
             border-bottom: 1px solid rgba(0,0,0,0.08);
-            padding-top: 2px !important;
-            padding-bottom: 2px !important;
-            gap: 0 !important;
+            padding: 3px 14px !important;
+            gap: 4px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"] {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: 0 !important;
         }
         /* Name text */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) p {
             font-size: 13px !important;
             opacity: 0.65;
             margin: 0 !important;
-            padding-left: 14px;
             white-space: nowrap;
             line-height: 30px;
         }
-        /* Strip button box — keep only the icon */
+        /* Strip button box — bare red icon, properly centred */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button {
             background: none !important;
             border: none !important;
             box-shadow: none !important;
             color: #c0392b !important;
             font-size: 16px !important;
-            height: 30px !important;
-            width: 30px !important;
+            height: 28px !important;
+            width: 28px !important;
             min-height: unset !important;
             padding: 0 !important;
             border-radius: 50% !important;
             opacity: 0.7;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             transition: opacity 0.15s, background 0.15s !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button:hover {
@@ -227,8 +234,7 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
         """,
         unsafe_allow_html=True,
     )
-    col_name, col_btn = st.columns([14, 1])
-    # .sbar-row marker is injected into the name column so :has() can find this row
+    col_name, col_btn = st.columns([1, 1])
     col_name.markdown(f'<span class="sbar-row">{icon} {name}</span>', unsafe_allow_html=True)
     return col_btn.button("⏻", key=btn_key, help="Log out")
 
