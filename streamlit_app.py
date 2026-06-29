@@ -200,35 +200,37 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
             width: auto !important;
             min-width: 0 !important;
         }
-        /* Name text */
+        /* Name text — vertically centred to match button */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) p {
             font-size: 13px !important;
             opacity: 0.65;
             margin: 0 !important;
             white-space: nowrap;
-            line-height: 30px;
+            line-height: 28px !important;
+            display: flex !important;
+            align-items: center !important;
         }
         /* Strip button box — bare red icon, properly centred */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button {
             background: none !important;
             border: none !important;
             box-shadow: none !important;
-            color: #c0392b !important;
+            color: #e74c3c !important;
             font-size: 16px !important;
             height: 28px !important;
             width: 28px !important;
             min-height: unset !important;
             padding: 0 !important;
             border-radius: 50% !important;
-            opacity: 0.7;
+            opacity: 1 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            transition: opacity 0.15s, background 0.15s !important;
+            line-height: 1 !important;
+            transition: background 0.15s !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button:hover {
-            background: rgba(192,57,43,0.1) !important;
-            opacity: 1 !important;
+            background: rgba(231,76,60,0.15) !important;
         }
         </style>
         """,
