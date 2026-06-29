@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 9 English Tutor</title>
+<style>
+/* ── Reset & base ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f5f5f0;
+  --surface:  #ffffff;
+  --border:   #ddddd8;
+  --border2:  #bbbbbb;
+  --text:     #1a1a1a;
+  --text2:    #555555;
+  --text3:    #888888;
+  --accent:   #1f4e79;
+  --accent-l: #d6e4f0;
+  --accent-t: #1a5276;
+  --green:    #196f3d;
+  --green-l:  #d5f5e3;
+  --amber:    #7d6608;
+  --amber-l:  #fef9e7;
+  --purple:   #6c3483;
+  --purple-l: #f4ecf7;
+  --red:      #922b21;
+  --red-l:    #fadbd8;
+  --radius:   8px;
+  --shadow:   0 1px 4px rgba(0,0,0,.08);
+}
+
+[data-theme="dark"] {
+  --bg:       #1a1a1e;
+  --surface:  #25252b;
+  --border:   #3a3a42;
+  --border2:  #555560;
+  --text:     #e8e8e0;
+  --text2:    #aaaaaa;
+  --text3:    #666666;
+  --accent:   #5b9bd5;
+  --accent-l: #1a2a3a;
+  --accent-t: #7ab3e0;
+  --green:    #52be80;
+  --green-l:  #0d2b1a;
+  --amber:    #f0c040;
+  --amber-l:  #2b2000;
+  --purple:   #c39bd3;
+  --purple-l: #1f0f2a;
+  --red:      #e74c3c;
+  --red-l:    #2a0f0f;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Layout ───────────────────────────────────── */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+.logo { font-size: 17px; font-weight: 600; color: var(--accent); letter-spacing: -.3px; }
+.logo span { color: var(--text2); font-weight: 400; font-size: 13px; margin-left: 8px; }
+
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.nav-btn {
+  padding: 0 16px;
+  height: 44px;
+  border: none;
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.nav-btn:hover { color: var(--text); }
+.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+main { flex: 1; padding: 1.5rem; max-width: 820px; margin: 0 auto; width: 100%; }
+
+/* ── Buttons ──────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--radius);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); cursor: pointer; font-size: 13px;
+  font-family: inherit; transition: background .15s;
+}
+.btn:hover { background: var(--bg); }
+.btn-primary {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.btn-primary:hover { opacity: .9; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* ── Cards ────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.card-title { font-size: 15px; font-weight: 600; margin-bottom: .25rem; }
+.card-sub { font-size: 13px; color: var(--text2); margin-bottom: 1rem; }
+
+/* ── Sections ─────────────────────────────────── */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── Form elements ────────────────────────────── */
+select, textarea, input[type="text"] {
+  font-family: inherit; font-size: 14px;
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  background: var(--bg); color: var(--text);
+  padding: 8px 10px; outline: none;
+  transition: border-color .15s;
+}
+select:focus, textarea:focus { border-color: var(--accent); }
+textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
+
+/* ── Callout boxes ────────────────────────────── */
+.callout {
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: .75rem 0;
+}
+.callout-green  { background: var(--green-l);  color: var(--green);  border-left: 3px solid var(--green); }
+.callout-amber  { background: var(--amber-l);  color: var(--amber);  border-left: 3px solid var(--amber); }
+.callout-blue   { background: var(--accent-l); color: var(--accent); border-left: 3px solid var(--accent); }
+.callout-purple { background: var(--purple-l); color: var(--purple); border-left: 3px solid var(--purple); }
+
+.callout strong { display: block; margin-bottom: 4px; }
+
+/* ── Quiz options ─────────────────────────────── */
+.qopt {
+  display: block; width: 100%; text-align: left;
+  padding: 9px 14px; margin-bottom: 6px;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+  cursor: pointer; font-size: 14px; font-family: inherit;
+  transition: background .12s;
+}
+.qopt:hover:not(:disabled) { background: var(--bg); }
+.qopt.ok  { background: var(--green-l);  border-color: var(--green);  color: var(--green); }
+.qopt.bad { background: var(--red-l);    border-color: var(--red);    color: var(--red); }
+
+/* ── Passage ──────────────────────────────────── */
+.passage {
+  background: var(--bg);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  font-size: 14px; line-height: 1.85;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* ── Vocab grid ───────────────────────────────── */
+.vgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 10px;
+}
+.vcard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px;
+  cursor: pointer; transition: border-color .15s, background .15s;
+}
+.vcard:hover { border-color: var(--border2); background: var(--bg); }
+.vcard.open { border-color: var(--accent); }
+.vword { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.vhint { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.vdef  { display: none; font-size: 13px; color: var(--text2); line-height: 1.5; margin-top: 6px; }
+.veg   { font-size: 12px; color: var(--text3); margin-top: 4px; font-style: italic; }
+.vcard.open .vdef { display: block; }
+.vcard.open .vhint { display: none; }
+
+/* ── Gap quiz buttons ─────────────────────────── */
+.gap-opt {
+  padding: 6px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); cursor: pointer; font-size: 13px;
+  font-family: inherit; transition: background .12s;
+}
+.gap-opt:hover:not(:disabled) { background: var(--bg); }
+.gap-opt.sel { background: var(--accent-l); border-color: var(--accent); color: var(--accent-t); }
+.gap-opt.ok  { background: var(--green-l); border-color: var(--green); color: var(--green); }
+.gap-opt.bad { background: var(--red-l); border-color: var(--red); color: var(--red); }
+
+/* ── TEEL checklist ───────────────────────────── */
+.teel-row {
+  display: flex; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); align-items: flex-start;
+}
+.teel-row:last-child { border-bottom: none; }
+.teel-row input { margin-top: 3px; flex-shrink: 0; cursor: pointer; }
+.teel-row label { cursor: pointer; font-size: 14px; }
+.teel-row label strong { display: block; margin-bottom: 2px; }
+
+/* ── Progress bar ─────────────────────────────── */
+.prog-wrap { height: 5px; background: var(--border); border-radius: 3px; margin-bottom: 1rem; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s; }
+
+/* ── Technique table ──────────────────────────── */
+.tech-row {
+  display: flex; gap: 12px; padding: 9px 0;
+  border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.tech-row:last-child { border-bottom: none; }
+.tech-name { font-weight: 600; min-width: 140px; flex-shrink: 0; color: var(--accent-t); }
+
+/* ── Score badge ──────────────────────────────── */
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  background: var(--accent-l); color: var(--accent-t);
+}
+
+/* ── Feedback box ─────────────────────────────── */
+.feedback { font-size: 13px; color: var(--text2); line-height: 1.7; margin-top: .75rem; }
+.feedback strong { color: var(--text); }
+
+/* ── Row flex helper ──────────────────────────── */
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* ── Progress tracker (sidebar-style stats) ────── */
+.stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 16px;
+  font-size: 13px; color: var(--text2); text-align: center;
+  flex: 1; min-width: 100px;
+}
+.stat-card .num { font-size: 22px; font-weight: 700; color: var(--accent); display: block; }
+
+/* ── Dark mode toggle ─────────────────────────── */
+#theme-btn {
+  width: 34px; height: 34px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; font-size: 16px; display: flex;
+  align-items: center; justify-content: center;
+}
+
+/* ── Print ────────────────────────────────────── */
+@media print {
+  header, nav, .btn, .no-print { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  body { background: #fff; color: #000; }
+}
+
+/* ── Scrollbar ────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header>
+    <div>
+      <span class="logo">Year 9 English Tutor<span>Victorian Curriculum · Year 10 Extension</span></span>
+    </div>
+    <div class="header-right">
+      <button id="theme-btn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <!-- Nav -->
+  <nav>
+    <button class="nav-btn active" onclick="showTab('writing', this)">✏️ Writing</button>
+    <button class="nav-btn" onclick="showTab('reading', this)">📖 Reading</button>
+    <button class="nav-btn" onclick="showTab('vocab', this)">📚 Vocabulary</button>
+    <button class="nav-btn" onclick="showTab('metalang', this)">🔍 Metalanguage</button>
+    <button class="nav-btn" onclick="showTab('progress', this)">📊 Progress</button>
+  </nav>
+
+  <!-- Main -->
+  <main>
+
+    <!-- ══ WRITING ══════════════════════════════ -->
+    <div id="tab-writing" class="section active">
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:.75rem;">
+          <div>
+            <div class="card-title">Writing practice</div>
+            <div class="card-sub" style="margin-bottom:0">Choose a task type, read the prompt, then write your response below</div>
+          </div>
+          <div class="row">
+            <select id="wtype" onchange="newPrompt()">
+              <option value="persuasive">Persuasive</option>
+              <option value="analytical">Analytical</option>
+              <option value="creative">Creative</option>
+              <option value="expository">Expository</option>
+            </select>
+            <button class="btn" onclick="newPrompt()">↺ New prompt</button>
+          </div>
+        </div>
+        <div id="wprompt" style="font-size:14px; line-height:1.7; padding:12px; background:var(--bg); border-radius:var(--radius); margin-bottom:.75rem;"></div>
+        <div id="wtip" class="callout callout-blue"></div>
+        <div style="font-size:12px; color:var(--text3); margin-bottom:4px;">Your response</div>
+        <textarea id="wresp" placeholder="Write your response here…" rows="8"></textarea>
+        <div class="row" style="margin-top:.75rem;">
+          <button class="btn btn-primary" onclick="checkWriting()">Get feedback</button>
+          <button class="btn" onclick="showModel()">View model paragraph</button>
+          <button class="btn btn-sm no-print" onclick="window.print()">🖨 Print</button>
+        </div>
+        <div id="wfb" class="feedback"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TEEL self-check</div>
+        <div class="card-sub">Tick each element once it's in your paragraph</div>
+        <div id="teel"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Writing tips — Year 10 level</div>
+        <div class="card-sub">Apply these strategies for top marks</div>
+        <div id="writing-tips"></div>
+      </div>
+    </div>
+
+    <!-- ══ READING ══════════════════════════════ -->
+    <div id="tab-reading" class="section">
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:.75rem;">
+          <div>
+            <div class="card-title">Unseen text comprehension</div>
+            <div class="card-sub" style="margin-bottom:0">Read the passage, then answer each question</div>
+          </div>
+          <div class="row">
+            <button class="btn" onclick="newPassage()">↺ New passage</button>
+          </div>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" id="rprog" style="width:0%"></div></div>
+        <div id="rtext" class="passage"></div>
+        <div id="rqs"></div>
+        <div id="rscore" class="feedback"></div>
+      </div>
+    </div>
+
+    <!-- ══ VOCABULARY ═══════════════════════════ -->
+    <div id="tab-vocab" class="section">
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:.75rem;">
+          <div>
+            <div class="card-title">Vocabulary flashcards</div>
+            <div class="card-sub" style="margin-bottom:0">Click any word to reveal its definition and example sentence</div>
+          </div>
+          <select id="vset" onchange="loadVocab()">
+            <option value="academic">Academic words</option>
+            <option value="literary">Literary terms</option>
+            <option value="analytical">Analytical verbs</option>
+          </select>
+        </div>
+        <div class="vgrid" id="vgrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Fill-in-the-gap quiz</div>
+        <div class="card-sub">Select the best word to complete each sentence</div>
+        <div id="gquiz"></div>
+        <div class="row" style="margin-top:.75rem;">
+          <button class="btn btn-primary" onclick="checkGaps()">Check answers</button>
+          <button class="btn" onclick="resetGaps()">↺ Reset</button>
+        </div>
+        <div id="gres" class="feedback"></div>
+      </div>
+    </div>
+
+    <!-- ══ METALANGUAGE ══════════════════════════ -->
+    <div id="tab-metalang" class="section">
+      <div class="card">
+        <div class="card-title">Identify the technique</div>
+        <div class="card-sub">Read each extract and select the correct literary or rhetorical technique</div>
+        <div id="mlqs"></div>
+        <div id="mlscore" class="feedback" style="margin-top:.75rem;"></div>
+        <div class="row" style="margin-top:.75rem;">
+          <button class="btn" onclick="resetMetalang()">↺ Try again</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Technique reference</div>
+        <div class="card-sub">Essential metalanguage for Year 9–10 English analysis</div>
+        <div id="techref"></div>
+      </div>
+    </div>
+
+    <!-- ══ PROGRESS ══════════════════════════════ -->
+    <div id="tab-progress" class="section">
+      <div class="card">
+        <div class="card-title">Your progress</div>
+        <div class="card-sub">Tracks activity across all sections in this browser session</div>
+        <div class="stats-row" id="stats-row"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Today's writing log</div>
+        <div class="card-sub">Your most recent writing response — saved automatically</div>
+        <div id="writing-log" style="font-size:13px; color:var(--text2); white-space:pre-wrap; font-style:italic;"></div>
+      </div>
+      <div class="card no-print">
+        <div class="card-title">Reset progress</div>
+        <div class="card-sub">Clears all stored activity data</div>
+        <button class="btn" onclick="resetProgress()">Clear progress</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══ Data ═══════════════════════════════════════════════════════
+
+var wTasks = {
+  persuasive: [
+    { p: "'Social media does more harm than good to teenagers.' Write a persuasive piece arguing for OR against this statement.", t: "Open with a strong thesis. Use at least 3 TEEL paragraphs. Include a rhetorical question and appeal to logos (statistics or evidence)." },
+    { p: "'Students should be allowed to choose their own curriculum.' Argue a position with reference to specific evidence.", t: "Anticipate a counterargument in your third body paragraph and rebut it — this demonstrates sophisticated reasoning." },
+    { p: "Write an opinion piece for a school newspaper: 'Year 9 students should be required to study a second language.'", t: "Use inclusive language ('we', 'our community') to build rapport with your reader. End with a memorable call to action." },
+    { p: "'Artificial intelligence will eventually replace most human jobs.' Construct a persuasive argument about the implications of this statement.", t: "Layer your evidence — move from anecdote → statistics → expert opinion for maximum persuasive impact." }
+  ],
+  analytical: [
+    { p: "Analyse how a text you have studied this year constructs a particular view of power. Use specific evidence from the text.", t: "Avoid plot summary. Every sentence should be analytical. Use: technique → quotation → effect on reader." },
+    { p: "'Authors use setting to reflect character.' Analyse how this is true in a text you have studied.", t: "Deep analysis of one or two key moments outscores surface coverage of many. Go narrow and deep." },
+    { p: "How does an author use language to position readers to sympathise with a character? Analyse using close textual evidence.", t: "Identify the specific technique (e.g. free indirect discourse, loaded diction) before discussing its effect. Precise metalanguage is rewarded." },
+    { p: "Analyse how the author creates tension in a key scene from your studied text.", t: "Structure your paragraph: name the technique → embed the quote → discuss effect on reader → link to author's broader purpose." }
+  ],
+  creative: [
+    { p: "Write the opening of a short story in which the protagonist discovers something that changes their understanding of their family.", t: "Establish voice in the first sentence. Show character through action and dialogue, not description." },
+    { p: "Continue this line: 'The letter had been under the floorboards for forty years, and now that she had found it, she wished she had not.' Write the next 250–350 words.", t: "Create tension by withholding information. Vary sentence length — short sentences accelerate pace; long ones build atmosphere." },
+    { p: "Write a monologue from the perspective of a person leaving their hometown for the last time.", t: "Use first person present tense for immediacy. Mix sensory memory (smell, sound) with the character's internal conflict." },
+    { p: "Write a scene in which two characters who have not spoken for years meet unexpectedly.", t: "Let subtext do the work. What characters do NOT say is often more powerful than what they say. Use action and pause." }
+  ],
+  expository: [
+    { p: "Explain what makes a text 'literary'. Use examples from texts you have encountered.", t: "Define your key terms in the introduction. Use hedging language ('tends to', 'often') to show nuanced thinking." },
+    { p: "Explain how context shapes the way a composer creates meaning in a text.", t: "Context = historical, cultural, biographical. Integrate context into analysis rather than treating it as a separate paragraph." },
+    { p: "Explain the difference between theme and message in literary texts, using examples.", t: "Theme is what a text explores; message is what it says about that theme. Distinguish clearly and illustrate with specific examples." }
+  ]
+};
+
+var modelParas = {
+  persuasive: {
+    title: "Model persuasive opening",
+    body: "While proponents of social media argue that it fosters connection, the evidence overwhelmingly suggests that its unregulated use among adolescents is corrosive to mental health. The very architecture of these platforms — designed to maximise engagement rather than wellbeing — positions teenagers as targets of manipulation rather than participants in genuine community.",
+    note: "Notice: clear thesis → concedes counterargument → precise evaluative language → strong closing metaphor."
+  },
+  analytical: {
+    title: "Model analytical TEEL paragraph",
+    body: "Orwell constructs the pigs as emblematic of political corruption through the gradual erosion of the commandments. The repeated revision culminating in 'All animals are equal, but some animals are more equal than others' deploys antithesis and irony to expose how ideological language is weaponised by those in power. This positions the reader to view political rhetoric with scepticism, unsettled by how easily principles are bent to serve the powerful.",
+    note: "Notice: argument stated → evidence embedded → technique named (antithesis, irony) → effect on reader → link to broader theme."
+  },
+  creative: {
+    title: "Model creative opening",
+    body: "The envelope sat on the kitchen table for three days before anyone touched it. Not because they hadn't noticed it — everyone had — but because in this family, certain silences had to be maintained, and this envelope, with its official stamp and her mother's maiden name, was clearly one of them.",
+    note: "Notice: tension through withheld information → character revealed through what people do not do → short sentences create intrigue."
+  },
+  expository: {
+    title: "Model expository paragraph",
+    body: "Context is never simply background — it is the very conditions that make meaning possible. A text produced in wartime cannot be read in the same way as one produced in peacetime, not because the words change, but because the pressures, fears, and silences that shaped the writing inflect every sentence.",
+    note: "Notice: bold thesis → immediate elaboration → specific reasoning → avoids vague generalisations."
+  }
+};
+
+var passages = [
+  {
+    title: "The last bookshop",
+    text: "The bell above the door had not rung in three hours. Marcus stood behind the counter, running his thumb along the spine of a novel he had stocked, unstocked, and restocked four times now — not because anyone had bought it, but because handling it gave him something to do. Outside, the street had the particular emptiness of a Saturday afternoon when everyone was elsewhere, presumably staring at a screen. He was not bitter about this, or so he told himself. He was pragmatic. He understood market forces. He had simply not anticipated, when he opened the shop seventeen years ago, that the thing people most wanted was the one thing he could not sell them: speed.",
+    qs: [
+      { q: "What does Marcus's repeated restocking of the novel suggest about his state of mind?", opts: ["He is organised and methodical", "He is restless and looking for distraction", "He is excited about a new delivery", "He is confused about pricing"], ans: 1, exp: "The repeated, purposeless action reveals restlessness and anxiety. 'Not because anyone had bought it, but because handling it gave him something to do' makes the displacement explicit." },
+      { q: "What does 'the particular emptiness of a Saturday afternoon' suggest about the setting?", opts: ["The street is unusually quiet for a Saturday", "The area is normally quiet", "The weather is keeping people away", "Saturdays are always slow for the shop"], ans: 0, exp: "'Particular' implies a distinct, recognisable quality — not random absence but a pointed, ironic emptiness on a day that should be busy. The word 'particular' signals the author's awareness of irony." },
+      { q: "What is 'the thing he could not sell them'? What does this reveal?", opts: ["Physical books", "A sense of nostalgia for reading", "Speed and digital convenience", "A community space"], ans: 2, exp: "The final irony — a bookshop cannot sell 'speed' — positions the author as critical of a culture that prioritises convenience over contemplation. The surprise of the last word lands as a quiet punch." }
+    ]
+  },
+  {
+    title: "On being ordinary",
+    text: "There is a quiet tyranny in the expectation of exceptionalism. We are told, from our earliest years, that we are capable of greatness — a well-intentioned lie that carries within it a monstrous implication: that ordinary is failure. My grandmother, who spent forty years teaching primary school and raised four children mostly alone, would not have described her life as extraordinary. She would have called it a life. I think she was wiser than we give her credit for. The relentless pressure to become remarkable may, paradoxically, be what prevents us from living well.",
+    qs: [
+      { q: "What does the writer mean by 'a quiet tyranny'?", opts: ["A loud and obvious form of oppression", "A subtle but deeply controlling social pressure", "A political system of governance", "A form of peer pressure or bullying"], ans: 1, exp: "'Quiet' signals something insidious and unspoken — not a visible law but a cultural assumption. 'Tyranny' elevates it to a form of control, creating an oxymoron that highlights the hidden nature of this pressure." },
+      { q: "Why does the writer describe 'you are capable of greatness' as 'a well-intentioned lie'?", opts: ["Because it is statistically untrue for most people", "Because it sounds kind but produces harmful effects", "Because teachers should not encourage students unrealistically", "Because most people lack the talent to be great"], ans: 1, exp: "The writer acknowledges the good intention but argues the consequence — making ordinary life feel like failure — is harmful despite the encouragement. The contrast between 'well-intentioned' and 'lie' does the work." },
+      { q: "What technique appears in the final sentence and what is its effect?", opts: ["Hyperbole — to exaggerate the scale of the problem", "Paradox — to make the reader reconsider a common assumption", "Alliteration — to create emphasis and rhythm", "Anecdote — to personalise the argument"], ans: 1, exp: "A paradox states something that seems self-contradictory but reveals a truth. Here, the drive to be 'remarkable' is the very thing that stops people living fully — an insight that challenges the reader's assumptions." }
+    ]
+  },
+  {
+    title: "Storm at sea",
+    text: "The ship did not creak — it groaned, a sound that seemed to come from the very marrow of the timber, as though the wood remembered every tree it had once been and was mourning the loss. Salt stung Lena's eyes, but she did not blink. She had learned, in three years at sea, that the ocean rewarded attention and punished distraction. A wave the height of a two-storey house was building on the starboard side, its face grey-green and entirely impersonal — it did not want to kill them; it simply did not notice them.",
+    qs: [
+      { q: "What technique is used in 'the wood remembered every tree it had once been'?", opts: ["Simile", "Personification", "Hyperbole", "Alliteration"], ans: 1, exp: "The timber is given human qualities — memory and mourning — which is personification. It deepens the atmosphere of age, loss, and impending doom by making the ship itself seem to grieve." },
+      { q: "What does 'the ocean rewarded attention and punished distraction' suggest about Lena?", opts: ["She is fearful and anxious about the sea", "She is experienced, disciplined, and calm", "She is new to sailing and learning quickly", "She is reckless and takes unnecessary risks"], ans: 1, exp: "She has internalised the sea's demands over three years, revealing calm competence rather than fear. The aphoristic phrasing suggests she has made this into a personal rule — earned wisdom." },
+      { q: "The wave is described as 'entirely impersonal'. What effect does this create?", opts: ["It makes the wave seem friendly and non-threatening", "It heightens the threat by removing any possibility of mercy or appeal", "It suggests the storm is weakening", "It reveals that Lena is not afraid of death"], ans: 1, exp: "An impersonal danger is more terrifying than a hostile one — you cannot reason with or appeal to it. The absence of malice paradoxically intensifies the menace; the wave simply doesn't care." }
+    ]
+  },
+  {
+    title: "The inheritance",
+    text: "She had expected grief to feel like drowning. Instead it felt like discovering, slowly, that the floor of every room she had ever known was made of something less solid than she had assumed. Her father's reading chair was still by the window. His handwriting still covered the margins of the paperbacks stacked beside it — corrections, arguments, exclamations she would never fully understand because she had not read what he was reading, had not thought to ask. That was the true inheritance: not the house, not the books, not the worn green chair, but the conversations she had failed to start.",
+    qs: [
+      { q: "What does the simile in the first two sentences suggest about grief?", opts: ["Grief is more violent than expected", "Grief is less dramatic but more pervasive than expected", "Grief passes quickly once confronted", "Grief only affects physical surroundings"], ans: 1, exp: "The expected simile ('drowning') is a cliche of overwhelming immersion. The actual image — floors becoming unreliable — conveys something quieter but more comprehensive: grief as a slow erosion of certainty rather than a sudden flood." },
+      { q: "What is meant by 'the true inheritance' in the final sentence?", opts: ["The house and the physical possessions left behind", "The financial value of the estate", "The regret over missed conversations and connection", "The responsibility of looking after the books and chair"], ans: 2, exp: "The final sentence reframes the entire passage. 'Inheritance' is used ironically — the real legacy is not material objects but the absence of intimacy, the 'conversations she had failed to start'. The turn is the emotional core of the piece." },
+      { q: "What is the effect of listing the objects in the second-to-last sentence?", opts: ["It shows how wealthy the father was", "It builds a rhythm that makes the final clause more powerful by contrast", "It suggests the narrator doesn't value possessions", "It creates a sense of chaos and disorder"], ans: 1, exp: "The triple list — 'not the house, not the books, not the worn green chair' — creates an accumulating rhythm that is then deliberately deflated by the true revelation ('but the conversations she had failed to start'). The list makes the emotional punch land harder." }
+    ]
+  }
+];
+
+var vocabSets = {
+  academic: [
+    { w: "Ambivalent",    d: "Having mixed or contradictory feelings about something.", e: "She felt ambivalent about leaving — excited for the future but mournful for the past." },
+    { w: "Ubiquitous",    d: "Present, appearing, or found everywhere.", e: "Smartphones have become ubiquitous in modern society." },
+    { w: "Tenuous",       d: "Very weak or slight; lacking substance.", e: "The connection between the two events was tenuous at best." },
+    { w: "Pragmatic",     d: "Dealing with things sensibly and realistically; practical.", e: "He took a pragmatic approach, focusing on what could actually be achieved." },
+    { w: "Equivocal",     d: "Open to more than one interpretation; deliberately ambiguous.", e: "His equivocal response left everyone uncertain about his intentions." },
+    { w: "Nuanced",       d: "Characterised by subtle and finely distinguished shades of meaning.", e: "A nuanced analysis acknowledges complexity rather than reducing it to simple binaries." },
+    { w: "Paradoxical",   d: "Seemingly contradictory yet revealing a deeper truth.", e: "It is paradoxical that the pressure to succeed can prevent achievement." },
+    { w: "Corroborate",   d: "To confirm or give support to a statement or theory.", e: "This evidence corroborates the interpretation that the author is critical of capitalism." },
+    { w: "Insidious",     d: "Proceeding in a gradual, subtle way, but with harmful effects.", e: "The insidious erosion of trust made the relationship impossible to repair." },
+    { w: "Juxtapose",     d: "To place two things side by side for contrasting effect.", e: "The author juxtaposes wealth and poverty to expose social inequality." }
+  ],
+  literary: [
+    { w: "Foreshadowing", d: "A hint or warning of a future event in the narrative.", e: "The dark clouds at the opening foreshadow the tragedy to come." },
+    { w: "Verisimilitude", d: "The appearance of being true or real.", e: "The author achieves verisimilitude through precise historical detail." },
+    { w: "Pathos",        d: "A quality that evokes sadness, pity, or tenderness.", e: "The final scene draws on pathos to leave the reader emotionally affected." },
+    { w: "Motif",         d: "A recurring element — image, phrase, or symbol — that develops theme.", e: "The recurring motif of mirrors reflects the protagonist's obsession with identity." },
+    { w: "Irony",         d: "Expression of meaning using language that normally signals the opposite.", e: "The dramatic irony creates tension — the audience knows what the character does not." },
+    { w: "Oxymoron",      d: "Two contradictory terms combined to create a striking effect.", e: "'Deafening silence' is an oxymoron that intensifies the oppressive atmosphere." },
+    { w: "Anaphora",      d: "Repetition of a word or phrase at the start of successive clauses.", e: "Churchill's repeated 'we shall fight' builds cumulative resolve." },
+    { w: "Pathetic fallacy", d: "Using the natural environment to reflect a character's emotional state.", e: "The storm mirrors the protagonist's inner turmoil." },
+    { w: "Ellipsis",      d: "The omission of words; or trailing off mid-sentence to suggest hesitation or continuation.", e: "The ellipsis at the chapter's end invites the reader to complete the thought." },
+    { w: "Polyphony",     d: "The presence of multiple distinct narrative voices within a text.", e: "The novel's polyphony refuses a single authoritative interpretation." }
+  ],
+  analytical: [
+    { w: "Conveys",       d: "Communicates or makes known (a feeling, idea, or impression).", e: "The author conveys a sense of inevitability through the passive voice." },
+    { w: "Positions",     d: "Places the reader in a particular attitude toward something.", e: "The use of first person positions the reader to sympathise with the narrator." },
+    { w: "Subverts",      d: "Undermines or overturns an expectation or literary convention.", e: "The ending subverts the expected resolution, refusing to provide comfort." },
+    { w: "Reinforces",    d: "Strengthens or confirms an idea or impression.", e: "The imagery reinforces the theme of isolation." },
+    { w: "Elicits",       d: "Draws out or evokes a response from the reader.", e: "The direct address elicits a sense of personal responsibility in the reader." },
+    { w: "Constructs",    d: "Builds or creates a meaning, identity, or world view.", e: "The text constructs a view of masculinity that is ultimately self-destructive." },
+    { w: "Challenges",    d: "Questions or puts a belief or assumption under scrutiny.", e: "The text challenges conventional notions of heroism." },
+    { w: "Privileges",    d: "Gives greater status or priority to one thing over another.", e: "The narrative privileges the female perspective, sidelining male voices." },
+    { w: "Invokes",       d: "Calls upon or refers to something to support a point.", e: "The author invokes the imagery of imprisonment to suggest confinement." },
+    { w: "Juxtaposes",    d: "Places contrasting elements side by side to highlight difference.", e: "The author juxtaposes innocence and experience to destabilise the reader's assumptions." }
+  ]
+};
+
+var gapQs = [
+  { s: "The author ___ the reader to question their assumptions about justice.", opts: ["explains", "positions", "tells", "describes"], ans: 1 },
+  { s: "Her response was deliberately ___ — she refused to commit to either side of the argument.", opts: ["articulate", "equivocal", "ubiquitous", "pragmatic"], ans: 1 },
+  { s: "The recurring image of water serves as a ___ for emotional instability throughout the novel.", opts: ["foreshadowing", "motif", "juxtaposition", "anaphora"], ans: 1 },
+  { s: "By ___ wealth and poverty, Dickens exposes the hypocrisy of Victorian society.", opts: ["subverting", "conveying", "juxtaposing", "eliciting"], ans: 2 },
+  { s: "The author's use of pathetic fallacy ___ the protagonist's sense of isolation.", opts: ["challenges", "invokes", "reinforces", "privileges"], ans: 2 },
+  { s: "The narrator's account of events is ___; the reader must look elsewhere for the truth.", opts: ["nuanced", "equivocal", "tenuous", "paradoxical"], ans: 1 }
+];
+
+var mlQs = [
+  { ex: "'The silence was deafening.'", opts: ["Simile", "Oxymoron", "Alliteration", "Personification"], ans: 1, exp: "'Deafening silence' pairs two contradictory ideas — silence cannot literally deafen. This is an oxymoron, used here to intensify the sense of oppressive, suffocating quiet." },
+  { ex: "'We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields…'", opts: ["Alliteration", "Hyperbole", "Anaphora", "Juxtaposition"], ans: 2, exp: "Anaphora is the repetition of a phrase at the beginning of successive clauses. Churchill uses it to build momentum and resolve — each repeated 'we shall fight' adds determination." },
+  { ex: "'It was the best of times, it was the worst of times.'", opts: ["Simile", "Anaphora with antithesis", "Personification", "Metaphor"], ans: 1, exp: "Both anaphora (repeated 'it was') and antithesis (best/worst) are used. Antithesis places contrasting ideas in parallel structure to highlight the paradox of revolutionary France." },
+  { ex: "'The curtains were a sullen red, as though the house itself was angry.'", opts: ["Metaphor", "Pathetic fallacy", "Alliteration", "Understatement"], ans: 1, exp: "Pathetic fallacy attributes human emotions to the environment. 'Sullen' and the house's 'anger' externalise the emotional atmosphere, making the setting reflect inner emotional states." },
+  { ex: "'Shall I compare thee to a summer's day? Thou art more lovely and more temperate.'", opts: ["Metaphor", "Rhetorical question opening a comparison", "Personification", "Hyperbole"], ans: 1, exp: "A rhetorical question invites the reader in, then the speaker immediately answers it — positioning the subject as superior to summer. The question is not a real question; it is a device to frame the praise." },
+  { ex: "'Hope is the thing with feathers — that perches in the soul.'", opts: ["Simile", "Metaphor", "Personification", "Oxymoron"], ans: 1, exp: "This is an extended metaphor — hope IS a bird, not merely like one. The metaphor is sustained across the whole poem, giving hope the qualities of lightness, fragility, and persistence." }
+];
+
+var techRef = [
+  { n: "Metaphor",         d: "A direct comparison — one thing IS another. Transfers qualities to create vividness or insight." },
+  { n: "Simile",           d: "Comparison using 'like' or 'as'. Often gentler and more sensory than metaphor." },
+  { n: "Personification",  d: "Giving human traits to non-human things. Creates emotional connection or a sense of menace." },
+  { n: "Pathetic fallacy", d: "Environment or weather reflects emotional atmosphere. Deepens mood without stating it explicitly." },
+  { n: "Anaphora",         d: "Repetition at the start of successive clauses. Builds rhythm, emphasis, and momentum." },
+  { n: "Antithesis",       d: "Contrasting ideas in parallel structure. Highlights tension, contradiction, or opposition." },
+  { n: "Oxymoron",         d: "Two contradictory terms combined ('living death', 'deafening silence')." },
+  { n: "Sibilance",        d: "Repeated 's' sounds. Can suggest softness, menace, or a hissing quality." },
+  { n: "Rhetorical question", d: "A question asked for effect — the answer is implied, not expected from the reader." },
+  { n: "Irony",            d: "Saying the opposite of what is meant, or a situation contrary to what is expected." },
+  { n: "Juxtaposition",    d: "Placing contrasting elements side by side to highlight differences or create tension." },
+  { n: "Foreshadowing",    d: "Hints at future events — creates tension, a sense of inevitability, or dramatic irony." },
+  { n: "Motif",            d: "Recurring image or idea that develops theme. Creates structural coherence across a text." },
+  { n: "Free indirect discourse", d: "Third-person narration that adopts a character's voice and thought patterns without speech marks." }
+];
+
+var teelData = [
+  { id: "t",  lbl: "Topic sentence", desc: "States the argument of the paragraph clearly. Does not begin with 'I' or plot summary." },
+  { id: "e1", lbl: "Evidence",       desc: "A quotation or specific reference embedded naturally in the sentence." },
+  { id: "e2", lbl: "Explain",        desc: "Names the technique and discusses its effect on the reader — not just what it means." },
+  { id: "l",  lbl: "Link",           desc: "Connects back to the essay question or leads into the next paragraph." }
+];
+
+var writingTipsData = [
+  { tip: "Never begin an analytical sentence with 'I'", detail: "It centres you rather than the text. Use 'The author' or 'The text' instead." },
+  { tip: "Name the technique before discussing its effect", detail: "Examiners reward precise metalanguage. 'The use of anaphora' is stronger than 'the repetition of the phrase'." },
+  { tip: "Discuss effect on the reader, not just meaning", detail: "Ask: what does this make the reader feel? Think? Believe? That is the effect." },
+  { tip: "Embed quotations — don't drop them in", detail: "Wrong: 'He said \"never surrender\". This shows…'. Right: 'Churchill's declaration that he would \"never surrender\" positions the reader to feel…'" },
+  { tip: "Use hedging language in expository writing", detail: "'tends to', 'often', 'can suggest' — these show nuanced thinking rather than overstatement." },
+  { tip: "Vary your analytical verbs", detail: "Replace 'shows' with: conveys, constructs, positions, subverts, elicits, reinforces, challenges, juxtaposes, invokes." }
+];
+
+// ══ State ══════════════════════════════════════════════════════
+
+var curTask = null;
+var curPassageIdx = 0;
+var rAnswered = 0;
+var mlAnswered = {};
+var gapSel = {};
+var progress = loadProgress();
+
+// ══ Navigation ══════════════════════════════════════════════════
+
+function showTab(id, btn) {
+  document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
+  document.querySelectorAll(".nav-btn").forEach(function(b) { b.classList.remove("active"); });
+  document.getElementById("tab-" + id).classList.add("active");
+  btn.classList.add("active");
+  if (id === "reading" && !document.getElementById("rtext").textContent) newPassage();
+  if (id === "vocab") loadVocab();
+  if (id === "metalang") renderMetalang();
+  if (id === "progress") renderProgress();
+}
+
+// ══ Theme ════════════════════════════════════════════════════════
+
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+  document.getElementById("theme-btn").textContent = isDark ? "🌙" : "☀️";
+  localStorage.setItem("theme", isDark ? "light" : "dark");
+}
+
+(function initTheme() {
+  var saved = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+  var btn = document.getElementById("theme-btn");
+  if (btn) btn.textContent = saved === "dark" ? "☀️" : "🌙";
+})();
+
+// ══ Progress ════════════════════════════════════════════════════
+
+function loadProgress() {
+  try {
+    return JSON.parse(localStorage.getItem("y9progress") || "{}");
+  } catch (e) { return {}; }
+}
+
+function saveProgress() {
+  localStorage.setItem("y9progress", JSON.stringify(progress));
+}
+
+function inc(key) {
+  progress[key] = (progress[key] || 0) + 1;
+  saveProgress();
+}
+
+function resetProgress() {
+  if (confirm("Clear all progress data?")) {
+    localStorage.removeItem("y9progress");
+    localStorage.removeItem("y9writing");
+    progress = {};
+    renderProgress();
+  }
+}
+
+function renderProgress() {
+  var r = document.getElementById("stats-row");
+  var stats = [
+    { label: "Prompts attempted", key: "prompts" },
+    { label: "Passages read", key: "passages" },
+    { label: "Quiz questions answered", key: "quiz_ans" },
+    { label: "Vocab cards revealed", key: "vocab_revealed" }
+  ];
+  r.innerHTML = stats.map(function(s) {
+    return '<div class="stat-card"><span class="num">' + (progress[s.key] || 0) + '</span>' + s.label + '</div>';
+  }).join("");
+
+  var wlog = localStorage.getItem("y9writing") || "(No writing saved yet — try a writing prompt.)";
+  document.getElementById("writing-log").textContent = wlog;
+}
+
+// ══ Writing ══════════════════════════════════════════════════════
+
+function newPrompt() {
+  var type = document.getElementById("wtype").value;
+  var arr = wTasks[type];
+  curTask = arr[Math.floor(Math.random() * arr.length)];
+  document.getElementById("wprompt").textContent = curTask.p;
+  document.getElementById("wtip").innerHTML = "<strong>Extension tip</strong> " + curTask.t;
+  document.getElementById("wresp").value = "";
+  document.getElementById("wfb").innerHTML = "";
+  inc("prompts");
+  // Uncheck TEEL
+  teelData.forEach(function(x) {
+    var cb = document.getElementById("ck-" + x.id);
+    if (cb) cb.checked = false;
+  });
+}
+
+function checkWriting() {
+  var txt = document.getElementById("wresp").value.trim();
+  if (!txt) { document.getElementById("wfb").innerHTML = '<span style="color:var(--text3)">Write something first.</span>'; return; }
+
+  localStorage.setItem("y9writing", txt.substring(0, 800) + (txt.length > 800 ? "…" : ""));
+
+  var wc = txt.split(/\s+/).filter(function(w) { return w; }).length;
+  var sents = txt.split(/[.!?]+/).filter(function(s) { return s.trim(); }).length;
+  var avg = sents > 0 ? Math.round(wc / sents) : 0;
+  var hasQ = /["''‘’“”]/.test(txt);
+  var hasM = /(metaphor|simile|personif|juxtapos|anaphora|irony|symbol|imagery|tone|voice|technique|oxymoron|foreshadow|motif|pathos|antithesis|alliter|sibilance|pathetic)/i.test(txt);
+  var hasV = /argue|contend|position|believe|suggest|propose|claim|assert|maintain/i.test(txt);
+  var hasComplex = /although|however|whereas|despite|while|nevertheless|furthermore|moreover|consequently/i.test(txt);
+
+  function tick(ok) { return ok ? '<span style="color:var(--green)">✓</span> ' : '<span style="color:var(--amber)">–</span> '; }
+
+  var r = "<strong>Word count:</strong> " + wc + " &nbsp;|&nbsp; <strong>Avg sentence length:</strong> " + avg + " words<br><br>";
+  r += "<strong>Checklist:</strong><br>";
+  r += tick(wc >= 80) + "Response length " + (wc >= 80 ? "(aim for 100+ words per paragraph for full development)" : "— aim for 80+ words per paragraph") + "<br>";
+  r += tick(hasQ) + "Evidence/quotation " + (hasQ ? "detected" : "— try embedding a specific quote or example") + "<br>";
+  r += tick(hasM) + "Metalanguage " + (hasM ? "used — well done!" : "— name the technique you are discussing") + "<br>";
+  r += tick(hasV) + "Argument signal " + (hasV ? "present" : "— use 'argue', 'contend', or 'suggest' to assert your position") + "<br>";
+  r += tick(hasComplex) + "Sentence variety " + (hasComplex ? "detected — good!" : "— try using 'although', 'however', or 'whereas' for complex sentences");
+  document.getElementById("wfb").innerHTML = r;
+}
+
+function showModel() {
+  var type = document.getElementById("wtype").value;
+  var m = modelParas[type];
+  document.getElementById("wfb").innerHTML =
+    "<strong>" + m.title + "</strong><br>" +
+    "<div style='background:var(--bg);border-left:3px solid var(--accent);padding:10px 14px;margin:.5rem 0;font-style:italic;font-size:14px;line-height:1.7;border-radius:0 var(--radius) var(--radius) 0;'>" + m.body + "</div>" +
+    "<div class='callout callout-green'>" + m.note + "</div>";
+}
+
+function loadTEEL() {
+  document.getElementById("teel").innerHTML = teelData.map(function(x) {
+    return '<div class="teel-row"><input type="checkbox" id="ck-' + x.id + '"><label for="ck-' + x.id + '"><strong>' + x.lbl + '</strong>' + x.desc + '</label></div>';
+  }).join("");
+}
+
+function loadWritingTips() {
+  document.getElementById("writing-tips").innerHTML = writingTipsData.map(function(t) {
+    return '<div class="tech-row"><span class="tech-name">' + t.tip + '</span><span style="color:var(--text2)">' + t.detail + '</span></div>';
+  }).join("");
+}
+
+// ══ Reading ════════════════════════════════════════════════════
+
+function newPassage() {
+  var prev = curPassageIdx;
+  do { curPassageIdx = Math.floor(Math.random() * passages.length); } while (passages.length > 1 && curPassageIdx === prev);
+  rAnswered = 0;
+  var p = passages[curPassageIdx];
+  document.getElementById("rtext").textContent = p.text;
+  document.getElementById("rscore").innerHTML = "";
+  document.getElementById("rprog").style.width = "0%";
+  document.getElementById("rqs").innerHTML = p.qs.map(function(q, i) {
+    return '<div class="card" id="qb' + i + '" style="margin-bottom:.5rem"><div style="font-weight:600;font-size:14px;margin-bottom:.5rem">Q' + (i + 1) + '. ' + q.q + '</div>' +
+      q.opts.map(function(o, j) { return '<button class="qopt" onclick="answerQ(' + i + ',' + j + ')" id="ro' + i + 'x' + j + '">' + o + '</button>'; }).join("") +
+      '<div id="rexp' + i + '" class="feedback"></div></div>';
+  }).join("");
+  inc("passages");
+}
+
+function answerQ(qi, j) {
+  var q = passages[curPassageIdx].qs[qi];
+  document.querySelectorAll('[id^="ro' + qi + 'x"]').forEach(function(b) { b.disabled = true; });
+  document.getElementById("ro" + qi + "x" + j).classList.add(j === q.ans ? "ok" : "bad");
+  document.getElementById("ro" + qi + "x" + q.ans).classList.add("ok");
+  document.getElementById("rexp" + qi).innerHTML = "<strong>Explanation:</strong> " + q.exp;
+  rAnswered++;
+  document.getElementById("rprog").style.width = Math.round(rAnswered / passages[curPassageIdx].qs.length * 100) + "%";
+  if (rAnswered === passages[curPassageIdx].qs.length) {
+    document.getElementById("rscore").innerHTML = "<strong>Passage complete!</strong> Click ↺ New passage for another text.";
+  }
+  inc("quiz_ans");
+}
+
+// ══ Vocabulary ══════════════════════════════════════════════════
+
+function loadVocab() {
+  var set = document.getElementById("vset").value;
+  document.getElementById("vgrid").innerHTML = vocabSets[set].map(function(v) {
+    return '<div class="vcard" onclick="revealVcard(this)">' +
+      '<div class="vword">' + v.w + '</div>' +
+      '<div class="vdef">' + v.d + '<div class="veg">&ldquo;' + v.e + '&rdquo;</div></div>' +
+      '<div class="vhint">Click to reveal</div></div>';
+  }).join("");
+  loadGapQuiz();
+}
+
+function revealVcard(el) {
+  var wasOpen = el.classList.contains("open");
+  el.classList.toggle("open");
+  if (!wasOpen) inc("vocab_revealed");
+}
+
+function loadGapQuiz() {
+  gapSel = {};
+  document.getElementById("gres").innerHTML = "";
+  document.getElementById("gquiz").innerHTML = gapQs.map(function(q, i) {
+    var s = q.s.replace("___", '<span style="border-bottom:1px solid var(--border2);padding:0 4px;color:var(--text3)">___</span>');
+    return '<div style="margin-bottom:1rem"><div style="font-size:14px;margin-bottom:6px;line-height:1.6">' + s + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+      q.opts.map(function(o, j) {
+        return '<button class="gap-opt" data-qi="' + i + '" data-j="' + j + '" onclick="pickGap(this,' + i + ',' + j + ')">' + o + '</button>';
+      }).join("") + '</div></div>';
+  }).join("");
+}
+
+function pickGap(el, qi, j) {
+  document.querySelectorAll('[data-qi="' + qi + '"]').forEach(function(b) { b.className = "gap-opt"; });
+  el.classList.add("sel");
+  gapSel[qi] = j;
+}
+
+function checkGaps() {
+  var ok = 0;
+  gapQs.forEach(function(q, i) {
+    var s = gapSel[i];
+    if (s === undefined) return;
+    document.querySelectorAll('[data-qi="' + i + '"]').forEach(function(b) { b.disabled = true; });
+    var sb = document.querySelector('[data-qi="' + i + '"][data-j="' + s + '"]');
+    var ab = document.querySelector('[data-qi="' + i + '"][data-j="' + q.ans + '"]');
+    if (sb) { sb.className = "gap-opt " + (s === q.ans ? "ok" : "bad"); }
+    if (ab && s !== q.ans) { ab.className = "gap-opt ok"; }
+    if (s === q.ans) ok++;
+  });
+  var n = Object.keys(gapSel).length;
+  document.getElementById("gres").innerHTML = n < gapQs.length
+    ? '<span style="color:var(--amber)">Answer all questions before checking.</span>'
+    : "<strong>Score: " + ok + "/" + gapQs.length + "</strong>" +
+      (ok === gapQs.length ? " — excellent!" : ok >= 4 ? " — good, review the missed ones." : " — review the vocabulary flashcards above and try again.");
+  inc("quiz_ans");
+}
+
+function resetGaps() {
+  loadGapQuiz();
+}
+
+// ══ Metalanguage ════════════════════════════════════════════════
+
+function renderMetalang() {
+  mlAnswered = {};
+  document.getElementById("mlscore").innerHTML = "";
+  document.getElementById("mlqs").innerHTML = mlQs.map(function(q, i) {
+    return '<div class="card" style="margin-bottom:.5rem">' +
+      '<div class="passage" style="margin-bottom:.75rem">' + q.ex + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+      q.opts.map(function(o, j) {
+        return '<button class="gap-opt" data-mi="' + i + '" data-j="' + j + '" onclick="answerML(this,' + i + ',' + j + ')">' + o + '</button>';
+      }).join("") +
+      '</div><div id="mlexp' + i + '" class="feedback" style="margin-top:.5rem"></div></div>';
+  }).join("");
+
+  document.getElementById("techref").innerHTML = techRef.map(function(t) {
+    return '<div class="tech-row"><span class="tech-name">' + t.n + '</span><span style="color:var(--text2);line-height:1.5">' + t.d + '</span></div>';
+  }).join("");
+}
+
+function answerML(el, mi, j) {
+  var q = mlQs[mi];
+  document.querySelectorAll('[data-mi="' + mi + '"]').forEach(function(b) { b.disabled = true; });
+  el.className = "gap-opt " + (j === q.ans ? "ok" : "bad");
+  var ab = document.querySelector('[data-mi="' + mi + '"][data-j="' + q.ans + '"]');
+  if (ab && j !== q.ans) ab.className = "gap-opt ok";
+  document.getElementById("mlexp" + mi).innerHTML = "<strong>Explanation:</strong> " + q.exp;
+  mlAnswered[mi] = (j === q.ans);
+  if (Object.keys(mlAnswered).length === mlQs.length) {
+    var c = Object.values(mlAnswered).filter(Boolean).length;
+    document.getElementById("mlscore").innerHTML =
+      '<strong>Score: ' + c + '/' + mlQs.length + '</strong> ' +
+      '<span class="badge">' + (c === mlQs.length ? "Perfect!" : c >= 4 ? "Strong!" : "Keep practising") + '</span>';
+  }
+  inc("quiz_ans");
+}
+
+function resetMetalang() {
+  renderMetalang();
+}
+
+// ══ Init ════════════════════════════════════════════════════════
+
+newPrompt();
+loadTEEL();
+loadWritingTips();
+</script>
+</body>
+</html>
