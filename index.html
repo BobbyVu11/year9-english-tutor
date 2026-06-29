@@ -533,6 +533,12 @@ textarea { width: 100%; resize: vertical; min-height: 120px; line-height: 1.6; }
 </div>
 
 <script>
+// ══ User identity (injected by Streamlit wrapper) ════════════
+// streamlit_app.py replaces this line before rendering.
+// Each user gets their own localStorage namespace so progress
+// is stored separately per account.
+var CURRENT_USER = 'default';
+
 // ══ Data ═══════════════════════════════════════════════════════
 
 var wTasks = {
@@ -890,12 +896,12 @@ window.addEventListener("load", notifyHeight);
 
 function loadProgress() {
   try {
-    return JSON.parse(localStorage.getItem("y9progress") || "{}");
+    return JSON.parse(localStorage.getItem("y9progress_" + CURRENT_USER) || "{}");
   } catch (e) { return {}; }
 }
 
 function saveProgress() {
-  localStorage.setItem("y9progress", JSON.stringify(progress));
+  localStorage.setItem("y9progress_" + CURRENT_USER, JSON.stringify(progress));
 }
 
 function inc(key) {
@@ -905,8 +911,8 @@ function inc(key) {
 
 function resetProgress() {
   if (confirm("Clear all progress data?")) {
-    localStorage.removeItem("y9progress");
-    localStorage.removeItem("y9writing");
+    localStorage.removeItem("y9progress_" + CURRENT_USER);
+    localStorage.removeItem("y9writing_" + CURRENT_USER);
     progress = {};
     renderProgress();
   }
@@ -924,7 +930,7 @@ function renderProgress() {
     return '<div class="stat-card"><span class="num">' + (progress[s.key] || 0) + '</span>' + s.label + '</div>';
   }).join("");
 
-  var wlog = localStorage.getItem("y9writing") || "(No writing saved yet — try a writing prompt.)";
+  var wlog = localStorage.getItem("y9writing_" + CURRENT_USER) || "(No writing saved yet — try a writing prompt.)";
   document.getElementById("writing-log").textContent = wlog;
 }
 
@@ -950,7 +956,7 @@ function checkWriting() {
   var txt = document.getElementById("wresp").value.trim();
   if (!txt) { document.getElementById("wfb").innerHTML = '<span style="color:var(--text3)">Write something first.</span>'; return; }
 
-  localStorage.setItem("y9writing", txt.substring(0, 800) + (txt.length > 800 ? "…" : ""));
+  localStorage.setItem("y9writing_" + CURRENT_USER, txt.substring(0, 800) + (txt.length > 800 ? "…" : ""));
 
   var wc = txt.split(/\s+/).filter(function(w) { return w; }).length;
   var sents = txt.split(/[.!?]+/).filter(function(s) { return s.trim(); }).length;

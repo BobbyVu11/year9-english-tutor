@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "role": "admin",
+      "display_name": "Administrator"
+    },
+    {
+      "username": "student",
+      "password": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "display_name": "Student"
+    },
+    {
+      "username": "Bobby",
+      "password": "613cdf8719c239e5eb17ced68b516b100e6aea5e1e1f0ccaea2d85811ca14afe",
+      "role": "student",
+      "display_name": "Bobby Vu"
+    }
+  ]
+}
