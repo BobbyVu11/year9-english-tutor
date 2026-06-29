@@ -311,35 +311,36 @@ def show_admin():
                         st.session_state.flash = f"🗑 User '{u['username']}' deleted."
                         st.rerun()
 
-                # ── Teacher note (separate mini-form) ─────────────────────
-                st.markdown("**📝 Teacher feedback note**")
-                st.caption("This message will appear as a banner when the student next logs in.")
-                with st.form(f"note_{u['username']}", clear_on_submit=False):
-                    current_note = u.get("note", "")
-                    new_note = st.text_area("Note for student", value=current_note,
-                                            placeholder="e.g. Great work on reading this week! Focus on metalanguage next.",
-                                            key=f"note_ta_{u['username']}", height=80)
-                    nc1, nc2 = st.columns(2)
-                    save_note_btn = nc1.form_submit_button("💾 Save note", use_container_width=True)
-                    clear_note_btn = nc2.form_submit_button("🗑 Clear note", use_container_width=True)
+                # ── Teacher note (students only) ──────────────────────────
+                if u["role"] == "student":
+                    st.markdown("**📝 Teacher feedback note**")
+                    st.caption("This message will appear as a banner when the student next logs in.")
+                    with st.form(f"note_{u['username']}", clear_on_submit=False):
+                        current_note = u.get("note", "")
+                        new_note = st.text_area("Note for student", value=current_note,
+                                                placeholder="e.g. Great work on reading this week! Focus on metalanguage next.",
+                                                key=f"note_ta_{u['username']}", height=80)
+                        nc1, nc2 = st.columns(2)
+                        save_note_btn = nc1.form_submit_button("💾 Save note", use_container_width=True)
+                        clear_note_btn = nc2.form_submit_button("🗑 Clear note", use_container_width=True)
 
-                if save_note_btn:
-                    data = load_users()
-                    for uu in data["users"]:
-                        if uu["username"] == u["username"]:
-                            uu["note"] = new_note.strip()
-                    save_users(data)
-                    st.session_state.flash = f"📝 Note saved for '{u['username']}'."
-                    st.rerun()
+                    if save_note_btn:
+                        data = load_users()
+                        for uu in data["users"]:
+                            if uu["username"] == u["username"]:
+                                uu["note"] = new_note.strip()
+                        save_users(data)
+                        st.session_state.flash = f"📝 Note saved for '{u['username']}'."
+                        st.rerun()
 
-                if clear_note_btn:
-                    data = load_users()
-                    for uu in data["users"]:
-                        if uu["username"] == u["username"]:
-                            uu["note"] = ""
-                    save_users(data)
-                    st.session_state.flash = f"🗑 Note cleared for '{u['username']}'."
-                    st.rerun()
+                    if clear_note_btn:
+                        data = load_users()
+                        for uu in data["users"]:
+                            if uu["username"] == u["username"]:
+                                uu["note"] = ""
+                        save_users(data)
+                        st.session_state.flash = f"🗑 Note cleared for '{u['username']}'."
+                        st.rerun()
 
         st.divider()
 
