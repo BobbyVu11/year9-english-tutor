@@ -181,8 +181,8 @@ def _logout():
 def _show_bar(icon: str, name: str, btn_key: str) -> bool:
     """
     Renders '👤 Bobby Vu ⏻' as a single inline HTML bar.
-    The visible ⏻ is styled HTML; clicking it triggers a hidden st.button()
-    via JavaScript so logout uses Streamlit's WebSocket (no page navigation).
+    The visible ⏻ is pure HTML; clicking it triggers a hidden st.button()
+    so logout uses Streamlit's WebSocket — no page navigation, one-click login.
     """
     st.markdown(
         f"""
@@ -202,21 +202,21 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
         .sbar-logout-icon:hover {{
             opacity: 1; background: rgba(192,57,43,0.12);
         }}
-        /* Hide the real Streamlit button — JS will click it invisibly */
-        div[data-testid="stButton"]:has(button[title="{btn_key}"]) {{
-            position: absolute; visibility: hidden;
-            height: 0; overflow: hidden; margin: 0;
+        /* Hide the real Streamlit button that sits immediately after this block */
+        div[data-testid="stMarkdownContainer"]:has(.sbar)
+            + div[data-testid="stButton"] {{
+            display: none !important;
         }}
         </style>
         <div class="sbar">
           <span class="sbar-name">{icon} {name}</span>
           <span class="sbar-logout-icon" title="Log out"
-                onclick="document.querySelector('button[title=&quot;{btn_key}&quot;]').click()">⏻</span>
+                onclick="document.querySelector('button[data-testid=&quot;stBaseButton-secondary&quot;]').click()">⏻</span>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    return st.button("⏻", key=btn_key, help=btn_key)
+    return st.button("⏻", key=btn_key)
 
 
 def show_admin():
