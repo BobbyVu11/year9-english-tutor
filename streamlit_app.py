@@ -329,8 +329,8 @@ def _render_tutor(username: str, display_name: str = ""):
     safe_name = display_name.replace("'", "\\'")
     html_content = (
         html_file.read_text(encoding="utf-8")
-        .replace("var CURRENT_USER = 'default';", f"var CURRENT_USER = '{username}';")
-        .replace("var DISPLAY_NAME  = '';",        f"var DISPLAY_NAME  = '{safe_name}';")
+        .replace("var CURRENT_USER  = 'default';", f"var CURRENT_USER  = '{username}';")
+        .replace("var DISPLAY_NAME  = '';",         f"var DISPLAY_NAME  = '{safe_name}';")
     )
 
     # scrolling=False → single browser scrollbar.

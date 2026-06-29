@@ -587,8 +587,8 @@ var DISPLAY_NAME  = '';   // injected by streamlit_app.py
   var nameEl   = document.getElementById("user-display");
   var logoutEl = document.getElementById("logout-btn");
   if (DISPLAY_NAME && nameEl)   nameEl.textContent = DISPLAY_NAME;
-  // Hide logout button when running standalone (no Streamlit wrapper)
-  if ((!DISPLAY_NAME || CURRENT_USER === 'default') && logoutEl) {
+  // Hide logout + name when running standalone (no Streamlit wrapper)
+  if (!DISPLAY_NAME && logoutEl) {
     logoutEl.style.display = "none";
     if (nameEl) nameEl.style.display = "none";
   }
