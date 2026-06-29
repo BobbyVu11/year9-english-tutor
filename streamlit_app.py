@@ -122,6 +122,19 @@ st.markdown(
             color: #2d3a8c !important;
             font-size: 0.85rem !important;
         }
+
+        /* Remove the browser's native password reveal/clear icon (Edge/IE)
+           so only Streamlit's own eye toggle shows — kills the "double eye" */
+        div[data-testid="stTextInput"] input::-ms-reveal,
+        div[data-testid="stTextInput"] input::-ms-clear {
+            display: none !important;
+        }
+
+        /* Hide the "Press Enter to submit form" instruction hint */
+        div[data-testid="InputInstructions"],
+        div[data-testid="stTextInputInstructions"] {
+            display: none !important;
+        }
     </style>
     """,
     unsafe_allow_html=True,
