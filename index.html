@@ -1027,8 +1027,8 @@ function renderLevelChart() {
       var col  = TYPE_COLORS[t];
       var entries = data.filter(function(d) { return d.type === t; });
       if (!entries.length) {
-        return '<div style="flex:1;min-width:0;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px">' +
-          '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px">' + t + '</div>' +
+        return '<div style="flex:1 1 calc(50% - 6px);min-width:calc(50% - 6px);max-width:100%;overflow:hidden;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px">' +
+          '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t + '</div>' +
           '<div style="font-size:22px;font-weight:700;color:var(--text3)">—</div>' +
           '<div style="font-size:11px;color:var(--text3)">No data yet</div></div>';
       }
@@ -1040,8 +1040,8 @@ function renderLevelChart() {
         var curr = LEVEL_NUM[latest.level];
         trend = curr > prev ? ' <span style="color:#22c55e">▲</span>' : curr < prev ? ' <span style="color:#ef4444">▼</span>' : ' <span style="color:var(--text3)">→</span>';
       }
-      return '<div style="flex:1;min-width:0;padding:10px 14px;background:var(--bg);border:2px solid ' + col + ';border-radius:10px">' +
-        '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px">' + t + '</div>' +
+      return '<div style="flex:1 1 calc(50% - 6px);min-width:calc(50% - 6px);max-width:100%;overflow:hidden;padding:10px 14px;background:var(--bg);border:2px solid ' + col + ';border-radius:10px">' +
+        '<div style="font-size:11px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t + '</div>' +
         '<div style="font-size:28px;font-weight:700;color:' + col + '">' + latest.level + trend + '</div>' +
         '<div style="font-size:11px;color:var(--text2);line-height:1.4">' + LEVEL_NAME[latest.level] + '</div>' +
         '<div style="font-size:10px;color:var(--text3)">' + latest.date + ' · ' + entries.length + ' session' + (entries.length > 1 ? 's' : '') + '</div>' +
