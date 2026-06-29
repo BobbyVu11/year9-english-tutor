@@ -853,10 +853,16 @@ var progress = loadProgress();
 
 // Tell the Streamlit parent iframe to resize to fit content
 function notifyHeight() {
+  // Wait for DOM paint to finish before measuring
   setTimeout(function() {
-    var h = document.documentElement.scrollHeight || document.body.scrollHeight;
-    window.parent.postMessage({ type: "streamlit:setFrameHeight", height: h }, "*");
-  }, 120); // small delay lets DOM finish rendering before measuring
+    var h = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+    window.parent.postMessage({ type: "streamlit:setFrameHeight", height: h + 40 }, "*");
+  }, 300);
 }
 
 function showTab(id, btn) {
@@ -1040,6 +1046,7 @@ function loadVocab() {
       '<div class="vhint">Click to reveal</div></div>';
   }).join("");
   loadGapQuiz();
+  notifyHeight();
 }
 
 function revealVcard(el) {
@@ -1109,6 +1116,7 @@ function renderMetalang() {
   document.getElementById("techref").innerHTML = techRef.map(function(t) {
     return '<div class="tech-row"><span class="tech-name">' + t.n + '</span><span style="color:var(--text2);line-height:1.5">' + t.d + '</span></div>';
   }).join("");
+  notifyHeight();
 }
 
 function answerML(el, mi, j) {

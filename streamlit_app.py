@@ -82,7 +82,7 @@ if not html_file.exists():
 
 html_content = html_file.read_text(encoding="utf-8")
 
-# scrolling=False removes the inner iframe scrollbar (single scrollbar on page).
-# height=1200 is the initial fallback — notifyHeight() in the HTML dynamically
-# resizes the iframe to exactly fit whichever tab is active.
-components.html(html_content, height=1200, scrolling=False)
+# scrolling=False = no inner iframe scrollbar (only one scrollbar on the page).
+# height=4500 is a safe ceiling for the tallest tab (Metalanguage: 15 questions
+# + 23 reference entries). notifyHeight() in the HTML shrinks/grows it dynamically.
+components.html(html_content, height=4500, scrolling=False)
