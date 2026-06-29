@@ -200,15 +200,29 @@ def _show_bar(icon: str, name: str, btn_key: str) -> bool:
             width: auto !important;
             min-width: 0 !important;
         }
-        /* Name text — vertically centred to match button */
+        /* Name column — remove all default padding/margin so it aligns with button */
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"]:first-child {
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.sbar-row)
+            > div[data-testid="stColumn"]:first-child > div {
+            padding: 0 !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        /* Name text */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) p {
             font-size: 13px !important;
             opacity: 0.65;
             margin: 0 !important;
+            padding: 0 !important;
             white-space: nowrap;
-            line-height: 28px !important;
-            display: flex !important;
-            align-items: center !important;
+            line-height: 1 !important;
         }
         /* Strip button box — bare red icon, properly centred */
         div[data-testid="stHorizontalBlock"]:has(.sbar-row) button {
