@@ -20,19 +20,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Hide Streamlit chrome for a cleaner look ────────────────────────────────
+# ── Hide Streamlit chrome and remove outer page scroll ─────────────────────
 st.markdown(
     """
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
+        /* Remove all padding so iframe fills the page */
         .block-container {
-            padding-top: 0.5rem;
-            padding-bottom: 0;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            max-width: 100% !important;
         }
+        /* Hide Streamlit's own page scrollbar — the iframe handles scrolling */
+        html, body { overflow: hidden; }
+        [data-testid="stAppViewContainer"] { overflow: hidden; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -78,4 +83,5 @@ if not html_file.exists():
 
 html_content = html_file.read_text(encoding="utf-8")
 
-components.html(html_content, height=920, scrolling=True)
+# height=100vh equivalent via JS — iframe fills the screen, inner app scrolls
+components.html(html_content, height=800, scrolling=True)
