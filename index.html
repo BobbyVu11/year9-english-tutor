@@ -851,20 +851,27 @@ var progress = loadProgress();
 
 // ══ Navigation ══════════════════════════════════════════════════
 
-// Tell the Streamlit parent iframe to resize to fit content
+// Tell Streamlit to resize the iframe to exactly fit the current tab's content.
+// Streamlit requires BOTH isStreamlitMessage:true AND type:"streamlit:setFrameHeight".
 function notifyHeight() {
   function send() {
-    var h = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
-    window.parent.postMessage({ type: "streamlit:setFrameHeight", height: h + 60 }, "*");
+    // Use requestAnimationFrame so the browser has painted the new DOM before we measure
+    requestAnimationFrame(function() {
+      var h = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      );
+      window.parent.postMessage(
+        { isStreamlitMessage: true, type: "streamlit:setFrameHeight", height: h + 32 },
+        "*"
+      );
+    });
   }
-  // Fire at 300ms and again at 1200ms to catch slow mobile renders
-  setTimeout(send, 300);
-  setTimeout(send, 1200);
+  // Send immediately after paint, and once more after 800ms for slow mobile layouts
+  send();
+  setTimeout(send, 800);
 }
 
 function showTab(id, btn) {

@@ -82,7 +82,7 @@ if not html_file.exists():
 
 html_content = html_file.read_text(encoding="utf-8")
 
-# scrolling=False = no inner iframe scrollbar (only one scrollbar on the page).
-# height=8000 covers Metalanguage on mobile (15 questions + 23 tech entries
-# stacked vertically can exceed 6000px). notifyHeight() trims excess dynamically.
-components.html(html_content, height=8000, scrolling=False)
+# scrolling=False = single scrollbar (the browser's own).
+# height=1500 is just the initial render before notifyHeight() fires and
+# resizes the iframe to exactly match the active tab's content height.
+components.html(html_content, height=1500, scrolling=False)
