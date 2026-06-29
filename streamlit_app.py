@@ -215,7 +215,7 @@ def show_admin():
         st.success(st.session_state.flash)
         st.session_state.flash = ""
 
-    tab_users, tab_tutor = st.tabs(["👥 Manage Users", "📚 Open Tutor"])
+    tab_users, tab_progress, tab_tutor = st.tabs(["👥 Manage Users", "📊 Student Progress", "📚 Open Tutor"])
 
     # ── Users tab ─────────────────────────────────────────────────────────────
     with tab_users:
@@ -311,6 +311,36 @@ def show_admin():
                         st.session_state.flash = f"🗑 User '{u['username']}' deleted."
                         st.rerun()
 
+                # ── Teacher note (separate mini-form) ─────────────────────
+                st.markdown("**📝 Teacher feedback note**")
+                st.caption("This message will appear as a banner when the student next logs in.")
+                with st.form(f"note_{u['username']}", clear_on_submit=False):
+                    current_note = u.get("note", "")
+                    new_note = st.text_area("Note for student", value=current_note,
+                                            placeholder="e.g. Great work on reading this week! Focus on metalanguage next.",
+                                            key=f"note_ta_{u['username']}", height=80)
+                    nc1, nc2 = st.columns(2)
+                    save_note_btn = nc1.form_submit_button("💾 Save note", use_container_width=True)
+                    clear_note_btn = nc2.form_submit_button("🗑 Clear note", use_container_width=True)
+
+                if save_note_btn:
+                    data = load_users()
+                    for uu in data["users"]:
+                        if uu["username"] == u["username"]:
+                            uu["note"] = new_note.strip()
+                    save_users(data)
+                    st.session_state.flash = f"📝 Note saved for '{u['username']}'."
+                    st.rerun()
+
+                if clear_note_btn:
+                    data = load_users()
+                    for uu in data["users"]:
+                        if uu["username"] == u["username"]:
+                            uu["note"] = ""
+                    save_users(data)
+                    st.session_state.flash = f"🗑 Note cleared for '{u['username']}'."
+                    st.rerun()
+
         st.divider()
 
         # ── Download users.json ────────────────────────────────────────────────
@@ -325,6 +355,165 @@ def show_admin():
             file_name="users.json",
             mime="application/json",
         )
+
+    # ── Student Progress tab ──────────────────────────────────────────────────
+    with tab_progress:
+        data = load_users()
+        students = [u for u in data["users"] if u["role"] == "student"]
+        if not students:
+            st.info("No student accounts yet.")
+        else:
+            # Build a JSON list of student usernames to inject into the component
+            students_json = json.dumps([
+                {"username": u["username"], "display_name": u.get("display_name", u["username"])}
+                for u in students
+            ])
+            progress_html = f"""
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+          font-size: 14px; color: #1a1a1a; background: #f5f5f0; margin: 0; padding: 12px; }}
+  h3 {{ margin: 0 0 4px; font-size: 15px; color: #1f4e79; }}
+  .student-block {{ background: #fff; border-radius: 10px; border: 1px solid #ddd;
+                    padding: 14px; margin-bottom: 14px; }}
+  .student-name {{ font-weight: 700; font-size: 15px; margin-bottom: 10px; color: #1f4e79; }}
+  .grade-row {{ display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }}
+  .grade-chip {{ padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }}
+  .chip-A {{ background:#d5f5e3; color:#196f3d; }}
+  .chip-B {{ background:#d6e4f0; color:#1f4e79; }}
+  .chip-C {{ background:#fef9e7; color:#7d6608; }}
+  .chip-D {{ background:#fadbd8; color:#922b21; }}
+  .chip-E {{ background:#f4ecf7; color:#6c3483; }}
+  .no-data {{ color: #888; font-size: 13px; font-style: italic; }}
+  canvas {{ max-height: 160px; }}
+  table {{ width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }}
+  th {{ background:#f0f4ff; padding:5px 8px; text-align:left; color:#2d3a8c; }}
+  td {{ padding:5px 8px; border-bottom:1px solid #eee; }}
+</style>
+</head><body>
+<script>
+var STUDENTS = {students_json};
+var TYPE_COLORS = {{
+  "Writing":"#4a6cf7","Reading":"#10b981",
+  "Metalanguage":"#8b5cf6","Vocabulary":"#f59e0b"
+}};
+var LEVEL_NUM = {{"A":5,"B":4,"C":3,"D":2,"E":1}};
+
+function loadData(username) {{
+  try {{ return JSON.parse(localStorage.getItem("y9levels_" + username) || "[]"); }}
+  catch(e) {{ return []; }}
+}}
+
+function latestByType(records) {{
+  var latest = {{}};
+  records.forEach(function(r) {{
+    if (!latest[r.type] || r.ts > latest[r.type].ts) latest[r.type] = r;
+  }});
+  return latest;
+}}
+
+function renderStudent(s) {{
+  var records = loadData(s.username);
+  var div = document.createElement("div");
+  div.className = "student-block";
+
+  var nameDiv = document.createElement("div");
+  nameDiv.className = "student-name";
+  nameDiv.textContent = "👤 " + s.display_name + " (" + s.username + ")";
+  div.appendChild(nameDiv);
+
+  if (records.length === 0) {{
+    var nd = document.createElement("div");
+    nd.className = "no-data";
+    nd.textContent = "No practice sessions recorded yet.";
+    div.appendChild(nd);
+    return div;
+  }}
+
+  // Latest grade chips
+  var latest = latestByType(records);
+  var row = document.createElement("div");
+  row.className = "grade-row";
+  ["Writing","Reading","Vocabulary","Metalanguage"].forEach(function(t) {{
+    if (latest[t]) {{
+      var chip = document.createElement("span");
+      chip.className = "grade-chip chip-" + latest[t].level;
+      chip.textContent = t + ": " + latest[t].level + " (" + latest[t].pct + "%)";
+      row.appendChild(chip);
+    }}
+  }});
+  div.appendChild(row);
+
+  // Mini chart — last 12 sessions across all types
+  var recent = records.slice(-12);
+  var canvasWrap = document.createElement("div");
+  var canvas = document.createElement("canvas");
+  canvas.id = "chart_" + s.username;
+  canvasWrap.appendChild(canvas);
+  div.appendChild(canvasWrap);
+  setTimeout(function() {{
+    new Chart(canvas, {{
+      type: "bar",
+      data: {{
+        labels: recent.map(function(r) {{ return r.date + " " + r.type.slice(0,1); }}),
+        datasets: [{{
+          data: recent.map(function(r) {{ return LEVEL_NUM[r.level]; }}),
+          backgroundColor: recent.map(function(r) {{ return TYPE_COLORS[r.type] + "cc"; }}),
+          borderRadius: 4
+        }}]
+      }},
+      options: {{
+        plugins: {{ legend: {{ display: false }}, tooltip: {{
+          callbacks: {{ label: function(c) {{
+            var r = recent[c.dataIndex];
+            return r.type + ": " + r.level + " (" + r.pct + "%) — " + r.score + "/" + r.total;
+          }}}}
+        }}}},
+        scales: {{
+          y: {{ min:0, max:5, ticks: {{ stepSize:1,
+            callback: function(v) {{ return ["","E","D","C","B","A"][v] || ""; }} }} }},
+          x: {{ ticks: {{ font: {{ size: 10 }} }} }}
+        }}
+      }}
+    }});
+  }}, 50);
+
+  // Session history table
+  var h3 = document.createElement("h3");
+  h3.textContent = "Session history (" + records.length + " total)";
+  h3.style.marginTop = "12px";
+  div.appendChild(h3);
+  var table = document.createElement("table");
+  table.innerHTML = "<tr><th>Date</th><th>Skill</th><th>Score</th><th>Grade</th></tr>";
+  records.slice().reverse().slice(0, 20).forEach(function(r) {{
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + r.date + "</td><td>" + r.type + "</td>" +
+                   "<td>" + r.score + "/" + r.total + " (" + r.pct + "%)</td>" +
+                   "<td><span class='grade-chip chip-" + r.level + "'>" + r.level + "</span></td>";
+    table.appendChild(tr);
+  }});
+  div.appendChild(table);
+
+  return div;
+}}
+
+window.addEventListener("load", function() {{
+  var container = document.getElementById("container");
+  if (STUDENTS.length === 0) {{
+    container.innerHTML = "<p style='color:#888'>No student accounts.</p>";
+    return;
+  }}
+  STUDENTS.forEach(function(s) {{
+    container.appendChild(renderStudent(s));
+  }});
+}});
+</script>
+<div id="container"></div>
+</body></html>
+"""
+            components.html(progress_html, height=600, scrolling=True)
 
     # ── Tutor tab (admin can also practise) ──────────────────────────────────
     with tab_tutor:
@@ -379,23 +568,25 @@ def show_student():
 
 
 def _render_tutor(username: str, display_name: str = ""):
-    """Load index.html, inject username + display name, and render."""
+    """Load index.html, inject username, display name, and teacher note, then render."""
     html_file = BASE / "index.html"
     if not html_file.exists():
         st.error("**index.html not found.** Make sure it is in the same folder as streamlit_app.py.")
         st.stop()
 
-    # Inject user identity so the HTML uses per-user localStorage keys
-    # and shows the correct name + logout button in its own header.
+    # Load teacher note for this user from users.json
+    data = load_users()
+    user_rec = find_user(username, data) or {}
+    note = user_rec.get("note", "").replace("'", "\\'").replace("\n", " ")
+
     safe_name = display_name.replace("'", "\\'")
     html_content = (
         html_file.read_text(encoding="utf-8")
         .replace("var CURRENT_USER  = 'default';", f"var CURRENT_USER  = '{username}';")
         .replace("var DISPLAY_NAME  = '';",         f"var DISPLAY_NAME  = '{safe_name}';")
+        .replace("var TEACHER_NOTE  = '';",         f"var TEACHER_NOTE  = '{note}';")
     )
 
-    # scrolling=False → single browser scrollbar.
-    # height=10000 covers the tallest tab (Metalanguage on mobile).
     components.html(html_content, height=10000, scrolling=False)
 
 
