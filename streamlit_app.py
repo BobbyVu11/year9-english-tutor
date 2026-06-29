@@ -83,6 +83,6 @@ if not html_file.exists():
 html_content = html_file.read_text(encoding="utf-8")
 
 # scrolling=False = no inner iframe scrollbar (only one scrollbar on the page).
-# height=4500 is a safe ceiling for the tallest tab (Metalanguage: 15 questions
-# + 23 reference entries). notifyHeight() in the HTML shrinks/grows it dynamically.
-components.html(html_content, height=4500, scrolling=False)
+# height=8000 covers Metalanguage on mobile (15 questions + 23 tech entries
+# stacked vertically can exceed 6000px). notifyHeight() trims excess dynamically.
+components.html(html_content, height=8000, scrolling=False)

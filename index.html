@@ -853,16 +853,18 @@ var progress = loadProgress();
 
 // Tell the Streamlit parent iframe to resize to fit content
 function notifyHeight() {
-  // Wait for DOM paint to finish before measuring
-  setTimeout(function() {
+  function send() {
     var h = Math.max(
       document.body.scrollHeight,
       document.body.offsetHeight,
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
     );
-    window.parent.postMessage({ type: "streamlit:setFrameHeight", height: h + 40 }, "*");
-  }, 300);
+    window.parent.postMessage({ type: "streamlit:setFrameHeight", height: h + 60 }, "*");
+  }
+  // Fire at 300ms and again at 1200ms to catch slow mobile renders
+  setTimeout(send, 300);
+  setTimeout(send, 1200);
 }
 
 function showTab(id, btn) {
